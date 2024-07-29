@@ -28,6 +28,20 @@
     "react/jsx-filename-extension": ["warn", { "extensions": [".ts", ".tsx"] }],
     "no-useless-catch": "off", // 불필요한 catch 못쓰게 하는 기능 끔
     "import/prefer-default-export": "off", //모듈에서 기본(default) export를 사용하는 것을 권장하는 규칙을 해제합니다. 모듈에서 명시적으로 export하는 것을 허용
-    "global-require": "off" // global-require 규칙 비활성화
+    "global-require": "off", // global-require 규칙 비활성화
+    "react/jsx-props-no-spreading": "off", // props 펼침연산자(spread operator)허용
+    "import/no-extraneous-dependencies": "off", // 테스트 또는 개발환경을 구성하는 파일에서는 devDependency 사용을 허용
+    "react/require-default-props": ["off"], //optional props default 값 설정안해도 되도록
+    "react/function-component-definition": [
+      2,
+      { "namedComponents": ["arrow-function", "function-declaration"] }
+    ],
+    "no-use-before-define": "off", //변수 아래쪽 선언 허용
+    "@typescript-eslint/no-use-before-define": [
+      //변수 아래쪽 선언 허용
+      "error",
+      { "variables": false, "functions": false, "classes": false }
+    ],
+    "react/jsx-no-constructed-context-values": "warn"
   }
 }
