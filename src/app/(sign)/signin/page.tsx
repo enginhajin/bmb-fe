@@ -51,7 +51,7 @@ export default function SignInPage() {
   const isButtonDisabled = !(id && password && isDirty && isValid)
 
   function onSubmit() {
-    setSubmitErrorMessage('IDおよびパスワードをご確認ください')
+    setSubmitErrorMessage('IDおよびパスワードをご確認ください。')
     setFocus('id')
   }
 
@@ -100,9 +100,7 @@ export default function SignInPage() {
             )}
           />
           {submitErrorMessage && (
-            <p className="text-sm text-destructive">
-              IDおよびパスワードをご確認ください
-            </p>
+            <p className="text-sm text-destructive">{submitErrorMessage}</p>
           )}
           <Button type="submit" disabled={isButtonDisabled} className="w-full">
             ログイン
