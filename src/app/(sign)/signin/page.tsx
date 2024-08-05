@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
-import { SignTemplate } from '@/components/template/SignTemplate'
+import { SignTemplate } from '@/components/templates/SignTemplate'
 
 const schema = z.object({
   id: z.string().min(1, '必須項目です。'),

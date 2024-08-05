@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { SignTemplate } from '@/components/template/SignTemplate'
+import { SignTemplate } from '@/components/templates/SignTemplate'
 import { Button } from '@/components/ui/button'
 import {
   Form,
