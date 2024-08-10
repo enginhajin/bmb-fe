@@ -16,7 +16,7 @@ interface GnbItem {
 const GnbItems: GnbItem[] = [
   { href: '/', label: '図書リスト', icon: <Book /> },
   { href: '/mypage/wish', label: 'お気に入りリスト', icon: <Heart /> },
-  { href: '/mypage/rental', label: 'レンタルリスト', icon: <Bookmark /> },
+  { href: '/mypage/loan', label: '貸出リスト', icon: <Bookmark /> },
   { href: '/admin/books/application', label: '図書登録', icon: <SquarePlus /> },
 ]
 
@@ -38,7 +38,7 @@ const Gnb = () => {
 
   return (
     <div
-      className={`fixed top-0 h-screen w-56 flex-shrink-0 bg-primary transition-[left] duration-500 ${isExpand ? 'left-0 lg:[&+div]:pl-56' : '-left-56 [&+div]:pl-0'}`}
+      className={`fixed top-0 z-40 h-screen w-56 flex-shrink-0 bg-primary transition-[left] duration-500 ${isExpand ? 'left-0 lg:[&+div]:pl-56' : '-left-56 [&+div]:pl-0'}`}
     >
       <button
         type="button"
