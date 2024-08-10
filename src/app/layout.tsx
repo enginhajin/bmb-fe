@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'bmb',
   description: 'bmb(bookmybook) project ~ 図書管理システム ~',
   icons: {
-    icon: '/favion.ico',
+    icon: '/favicon.ico',
   },
 }
 
