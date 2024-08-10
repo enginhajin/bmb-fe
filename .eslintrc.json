@@ -37,11 +37,21 @@
       { "namedComponents": ["arrow-function", "function-declaration"] }
     ],
     "no-use-before-define": "off", //변수 아래쪽 선언 허용
+    "no-nested-ternary": "off", //중첩 연산자 허용
+    "no-underscore-dangle": "off",
+    "no-plusplus": "off", // ++연산자 허용
     "@typescript-eslint/no-use-before-define": [
       //변수 아래쪽 선언 허용
       "error",
       { "variables": false, "functions": false, "classes": false }
     ],
-    "react/jsx-no-constructed-context-values": "warn"
+    "react/jsx-no-constructed-context-values": "warn",
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "property",
+        "format": ["snake_case", "camelCase", "UPPER_CASE"]
+      }
+    ]
   }
 }
