@@ -65,7 +65,13 @@ const Gnb = () => {
           <ul className="flex flex-col gap-2">
             {GnbItems.map((item) => {
               const { href, label, icon } = item
-              const isActive = pathname === href
+              let isActive = pathname === href
+
+              if (label === '図書リスト') {
+                if (pathname === '/' || pathname.startsWith('/books')) {
+                  isActive = true
+                }
+              }
 
               return (
                 <li key={href}>
