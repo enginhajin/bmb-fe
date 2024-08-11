@@ -1,4 +1,4 @@
-export type BookStatus = 'AVALIABLE' | 'UNAVAILABLE' | 'CHECKEDOUT'
+export type BookStatus = 'AVALIABLE' | 'UNAVALIABLE' | 'CHECKEDOUT'
 export type SearchCategory = 'ALL' | 'TITLE' | 'AUTHOR' | 'PUBLISHER'
 
 export interface BookItem {
@@ -21,4 +21,21 @@ export interface BookListData {
   category: SearchCategory
   keyword: string
   books: BookItem[]
+}
+
+export interface BookInfoData {
+  id: string
+  isbn: string
+  title: string
+  description: string
+  thumbnail: string
+  author_name: string
+  publisher_name: string
+  publisher_date: string
+  status: BookStatus
+}
+
+export interface BookWishData {
+  wished: boolean
+  wish_count: number
 }
