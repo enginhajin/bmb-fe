@@ -7,7 +7,9 @@ import {
   FormData as SearchFormData,
 } from '@/components/molecules/SearchInput'
 import { BookList } from '@/components/organisms/BookList'
+import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
+import { Dialog } from '@/components/ui/dialog'
 import { useCustomSearchParams } from '@/hooks'
 import { BookListData, SearchCategory } from '@/types/books'
 import { Suspense, useEffect, useState } from 'react'
@@ -39,7 +41,7 @@ const mockData: BookListData = {
       thumbnail: '/img/book/book_thumbnail.jpg',
       author_name: '坂口恭平',
       publisher_name: '大和書房',
-      status: 'UNAVAILABLE',
+      status: 'UNAVALIABLE',
       wish_count: 0,
       wished: false,
     },
@@ -106,6 +108,7 @@ function Page() {
       : 'ALL',
     keyword: searchParams.keyword || '',
   })
+  const [openDialog, setOpenDialog] = useState<boolean>(false)
 
   const handlePageChange = (page: number) => {
     setCurrentPage(String(page))
@@ -137,7 +140,10 @@ function Page() {
   return (
     <GnbTemplate>
       <SearchInput data={currentSearchData} onSearch={handleSearch} />
-      <BookList data={mockData} />
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+        <BookList data={mockData} setOpenDialog={setOpenDialog} />
+        <ReturnDialogContent setOpenDialog={setOpenDialog} />
+      </Dialog>
       <Pagination
         total_pages={total_pages}
         current_page={Number(searchParams.page)}
