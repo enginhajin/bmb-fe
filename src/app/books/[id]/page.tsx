@@ -37,7 +37,7 @@ const mockWishData: BookWishInfo = {
 }
 
 export default function BookPage() {
-  const [openDialog, setOpenDialog] = useState<boolean>(false)
+  const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false)
   const handleToggleWish = (wished: boolean) => {
     toast(
       <span className="flex gap-2">
@@ -61,14 +61,18 @@ export default function BookPage() {
 
   return (
     <GnbTemplate>
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+      <Dialog open={openReturnDialog} onOpenChange={setOpenReturnDialog}>
         <BookInfo
           bookData={mockData}
           wishData={mockWishData}
           onToggleWish={handleToggleWish}
-          setOpenDialog={setOpenDialog}
+          setOpenReturnDialog={setOpenReturnDialog}
         />
-        <ReturnDialogContent setOpenDialog={setOpenDialog} />
+        <ReturnDialogContent
+          onSubmit={() => {
+            setOpenReturnDialog(false)
+          }}
+        />
       </Dialog>
       <Toaster position="top-center" />
     </GnbTemplate>
