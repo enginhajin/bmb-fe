@@ -9,14 +9,14 @@ export interface BookInfoProps {
   bookData: BookDetailInfo
   wishData: BookWishInfo
   onToggleWish: (wished: boolean) => void
-  setOpenDialog: Dispatch<SetStateAction<boolean>>
+  setOpenReturnDialog: Dispatch<SetStateAction<boolean>>
 }
 
 const BookInfo = ({
   bookData,
   wishData,
   onToggleWish,
-  setOpenDialog,
+  setOpenReturnDialog,
 }: BookInfoProps) => {
   const router = useRouter()
   const {
@@ -95,7 +95,7 @@ const BookInfo = ({
               disabled={status === 'UNAVALIABLE'}
               onClick={() => {
                 if (status === 'CHECKEDOUT') {
-                  setOpenDialog(true)
+                  setOpenReturnDialog(true)
                 } else {
                   navigateToLoanPage()
                 }

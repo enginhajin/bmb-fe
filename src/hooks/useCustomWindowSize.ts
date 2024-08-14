@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { debounce } from 'lodash'
 
-const useWindowSize = () => {
+const useCustomWindowSize = () => {
   const [windowSize, setWindowSize] = useState<{
     width: undefined | number
     height: undefined | number
@@ -24,4 +24,4 @@ const useWindowSize = () => {
   return windowSize
 }
 
-export default useWindowSize
+export default useCustomWindowSize

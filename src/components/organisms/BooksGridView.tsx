@@ -5,18 +5,15 @@ import { Button } from '@/components/ui/button'
 import { Heart } from 'lucide-react'
 import { toast, Toaster } from 'sonner'
 import { Dispatch, SetStateAction } from 'react'
-import { useRouter } from 'next/navigation'
+import { useCustomNavigation } from '@/hooks'
 
-export interface BooksListProps {
+export interface BooksGridViewProps {
   data: BookListInfo
-  setOpenDialog: Dispatch<SetStateAction<boolean>>
+  setOpenReturnDialog: Dispatch<SetStateAction<boolean>>
 }
 
-const BookList = ({ data, setOpenDialog }: BooksListProps) => {
-  const router = useRouter()
-  const navigateToLoanPage = () => {
-    router.push('/books/1')
-  }
+const BooksGridView = ({ data, setOpenReturnDialog }: BooksGridViewProps) => {
+  const { navigateToLoan } = useCustomNavigation()
 
   const handleToggleWish = (isWished: boolean) => {
     toast(
@@ -95,9 +92,9 @@ const BookList = ({ data, setOpenDialog }: BooksListProps) => {
                     disabled={status === 'UNAVALIABLE'}
                     onClick={() => {
                       if (status === 'CHECKEDOUT') {
-                        setOpenDialog(true)
+                        setOpenReturnDialog(true)
                       } else {
-                        navigateToLoanPage()
+                        navigateToLoan(id)
                       }
                     }}
                   >
@@ -118,4 +115,4 @@ const BookList = ({ data, setOpenDialog }: BooksListProps) => {
   )
 }
 
-export { BookList }
+export { BooksGridView }

@@ -22,6 +22,8 @@ const passwordRegex =
 
 const idRegex = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d]{4,10}$/
 
+const nicknameRegex = /^[ぁ-ゔァ-ヴー一-龯a-zA-Z0-9]{2,10}$/
+
 const schema = z.object({
   id: z
     .string()
@@ -37,7 +39,13 @@ const schema = z.object({
     .regex(passwordRegex, {
       message: '半角英字と、数字または記号を組み合わせてください。',
     }),
-  name: z.string().min(2, '２文字以上入力してください。'),
+  nickname: z
+    .string()
+    .min(2, '２文字以上入力してください。')
+    .max(10, { message: '10文字以下入力してください。' })
+    .regex(nicknameRegex, {
+      message: '日本語と英数字のみ入力できます。',
+    }),
 })
 
 type FormData = z.infer<typeof schema>
@@ -49,7 +57,7 @@ export default function SignUpPage() {
     defaultValues: {
       id: '',
       password: '',
-      name: '',
+      nickname: '',
     },
   })
   const {
@@ -62,9 +70,9 @@ export default function SignUpPage() {
 
   const id = watch('id')
   const password = watch('password')
-  const name = watch('name')
+  const nickname = watch('nickname')
 
-  const isButtonDisabled = !(id && password && name && isDirty && isValid)
+  const isButtonDisabled = !(id && password && nickname && isDirty && isValid)
 
   function onSubmit() {
     setError(
@@ -123,7 +131,7 @@ export default function SignUpPage() {
           />
           <FormField
             control={control}
-            name="name"
+            name="nickname"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>bmbで表示される名前</FormLabel>

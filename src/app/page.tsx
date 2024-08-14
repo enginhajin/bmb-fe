@@ -1,17 +1,14 @@
 'use client'
 
 import { Pagination } from '@/components/molecules/Pagination'
-import {
-  SearchInput,
-  selectItems as searchSelectItems,
-} from '@/components/molecules/SearchInput'
-import { BookList } from '@/components/organisms/BookList'
+import { SearchInput } from '@/components/molecules/SearchInput'
+import { BooksGridView } from '@/components/organisms/BooksGridView'
 import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
 import { Dialog } from '@/components/ui/dialog'
-import { useCustomSearchParams } from '@/hooks'
-import { BookListInfo, SearchCategory, BookSearchInfo } from '@/types/books'
-import { Suspense, useEffect, useState } from 'react'
+import { useCustomPagination, useCustomSearchBooks } from '@/hooks'
+import { BookListInfo } from '@/types/books'
+import { Suspense, useState } from 'react'
 
 const mockData: BookListInfo = {
   total_pages: 5,
@@ -95,46 +92,9 @@ const mockData: BookListInfo = {
 
 function Page() {
   const { total_pages } = mockData
-  const { searchParams, setSearchParams } = useCustomSearchParams()
-  const [currentPage, setCurrentPage] = useState<string>(
-    searchParams.page || '1',
-  )
-  const [currentSearchData, setSearchData] = useState<BookSearchInfo>({
-    category: searchSelectItems.some(
-      (item) => item.category === searchParams.category,
-    )
-      ? (searchParams.category as SearchCategory)
-      : 'ALL',
-    keyword: searchParams.keyword || '',
-  })
-  const [openDialog, setOpenDialog] = useState<boolean>(false)
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(String(page))
-  }
-
-  const handleSearch = (data: BookSearchInfo) => {
-    setSearchData(data)
-  }
-
-  useEffect(() => {
-    setSearchParams({
-      ...searchParams,
-      page:
-        Number(currentPage) < 1 || Number(currentPage) > total_pages
-          ? '1'
-          : currentPage,
-    })
-  }, [currentPage])
-
-  useEffect(() => {
-    const { category, keyword } = currentSearchData
-    setSearchParams({
-      ...searchParams,
-      category,
-      keyword,
-    })
-  }, [currentSearchData])
+  const { currentPage, handlePageChange } = useCustomPagination(total_pages)
+  const { currentSearchData, handleSearch } = useCustomSearchBooks()
+  const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false)
 
   return (
     <GnbTemplate
@@ -143,13 +103,20 @@ function Page() {
         <SearchInput data={currentSearchData} onSearch={handleSearch} />
       }
     >
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <BookList data={mockData} setOpenDialog={setOpenDialog} />
-        <ReturnDialogContent setOpenDialog={setOpenDialog} />
+      <Dialog open={openReturnDialog} onOpenChange={setOpenReturnDialog}>
+        <BooksGridView
+          data={mockData}
+          setOpenReturnDialog={setOpenReturnDialog}
+        />
+        <ReturnDialogContent
+          onSubmit={() => {
+            setOpenReturnDialog(false)
+          }}
+        />
       </Dialog>
       <Pagination
         total_pages={total_pages}
-        current_page={Number(searchParams.page)}
+        current_page={currentPage}
         onPageChange={handlePageChange}
       />
     </GnbTemplate>

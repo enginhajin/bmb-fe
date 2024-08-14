@@ -1,14 +1,11 @@
 'use client'
 
-import { Suspense, useState, useEffect } from 'react'
-import {
-  SearchInput,
-  selectItems as searchSelectItems,
-} from '@/components/molecules/SearchInput'
+import { Suspense, useState } from 'react'
+import { SearchInput } from '@/components/molecules/SearchInput'
 import { BooksListView } from '@/components/organisms/BooksListView'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
-import { BookSearchInfo, BookWishListInfo, SearchCategory } from '@/types/books'
-import { useCustomSearchParams } from '@/hooks'
+import { BookWishListInfo } from '@/types/books'
+import { useCustomPagination, useCustomSearchBooks } from '@/hooks'
 import { Pagination } from '@/components/molecules/Pagination'
 import { Dialog } from '@/components/ui/dialog'
 import { DeleteDialogContent } from '@/components/organisms/DeleteDialogContent'
@@ -83,47 +80,9 @@ const mockData: BookWishListInfo = {
 
 function Page() {
   const { total_pages } = mockData
-  const { searchParams, setSearchParams } = useCustomSearchParams()
-  const [currentPage, setCurrentPage] = useState<string>(
-    searchParams.page || '1',
-  )
-  const [currentSearchData, setSearchData] = useState<BookSearchInfo>({
-    category: searchSelectItems.some(
-      (item) => item.category === searchParams.category,
-    )
-      ? (searchParams.category as SearchCategory)
-      : 'ALL',
-    keyword: searchParams.keyword || '',
-  })
-
-  const [openDialog, setOpenDialog] = useState<boolean>(false)
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(String(page))
-  }
-
-  const handleSearch = (data: BookSearchInfo) => {
-    setSearchData(data)
-  }
-
-  useEffect(() => {
-    setSearchParams({
-      ...searchParams,
-      page:
-        Number(currentPage) < 1 || Number(currentPage) > total_pages
-          ? '1'
-          : currentPage,
-    })
-  }, [currentPage])
-
-  useEffect(() => {
-    const { category, keyword } = currentSearchData
-    setSearchParams({
-      ...searchParams,
-      category,
-      keyword,
-    })
-  }, [currentSearchData])
+  const { currentPage, handlePageChange } = useCustomPagination(total_pages)
+  const { currentSearchData, handleSearch } = useCustomSearchBooks()
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false)
 
   return (
     <GnbTemplate
@@ -132,16 +91,22 @@ function Page() {
         <SearchInput data={currentSearchData} onSearch={handleSearch} />
       }
     >
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <BooksListView data={mockData} setOpenDialog={setOpenDialog} />
+      <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+        <BooksListView
+          data={mockData}
+          setOpenDeleteDialog={setOpenDeleteDialog}
+          isVisibleLoanButton
+          isVisibleDeleteButton
+        />
         <DeleteDialogContent
-          title="お気に入りから削除しますか？"
-          setOpenDialog={setOpenDialog}
+          onSubmit={() => {
+            setOpenDeleteDialog(false)
+          }}
         />
       </Dialog>
       <Pagination
         total_pages={total_pages}
-        current_page={Number(searchParams.page)}
+        current_page={currentPage}
         onPageChange={handlePageChange}
       />
     </GnbTemplate>

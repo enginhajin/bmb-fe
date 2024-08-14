@@ -2,19 +2,23 @@ import { BookWishListInfo } from '@/types/books'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction } from 'react'
+import { useCustomNavigation } from '@/hooks'
 
 export interface BooksListViewProps {
   data: BookWishListInfo
-  setOpenDialog: Dispatch<SetStateAction<boolean>>
+  setOpenDeleteDialog: Dispatch<SetStateAction<boolean>>
+  isVisibleLoanButton?: boolean
+  isVisibleDeleteButton?: boolean
 }
 
-const BooksListView = ({ data, setOpenDialog }: BooksListViewProps) => {
-  const router = useRouter()
-  const navigateToLoanPage = () => {
-    router.push('/books/1')
-  }
+const BooksListView = ({
+  data,
+  isVisibleLoanButton = false,
+  isVisibleDeleteButton = false,
+  setOpenDeleteDialog,
+}: BooksListViewProps) => {
+  const { navigateToLoan } = useCustomNavigation()
 
   return (
     <ul className="-m-3 flex flex-wrap">
@@ -61,21 +65,25 @@ const BooksListView = ({ data, setOpenDialog }: BooksListViewProps) => {
                   </ul>
                 </div>
                 <div className="mt-2 flex w-full flex-grow items-end justify-end lg:w-28 lg:flex-shrink-0 lg:flex-col lg:items-center lg:justify-center">
-                  <Button
-                    size="sm"
-                    className="w-1/2 max-w-28 lg:w-full"
-                    onClick={navigateToLoanPage}
-                  >
-                    貸出
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="ml-2 w-1/2 max-w-28 border-2 border-destructive text-destructive hover:bg-destructive hover:text-white lg:ml-0 lg:mt-2 lg:w-full"
-                    onClick={() => setOpenDialog(true)}
-                  >
-                    削除
-                  </Button>
+                  {isVisibleLoanButton && (
+                    <Button
+                      size="sm"
+                      className="w-1/2 max-w-28 lg:w-full"
+                      onClick={() => navigateToLoan(id)}
+                    >
+                      貸出
+                    </Button>
+                  )}
+                  {isVisibleDeleteButton && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="ml-2 w-1/2 max-w-28 border-2 border-destructive text-destructive hover:bg-destructive hover:text-white lg:ml-0 lg:mt-2 lg:w-full"
+                      onClick={() => setOpenDeleteDialog(true)}
+                    >
+                      削除
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
