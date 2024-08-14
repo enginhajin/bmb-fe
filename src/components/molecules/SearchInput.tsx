@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/select'
 import { Form, FormField } from '@/components/ui/form'
 import { z } from 'zod'
-import { SearchCategory } from '@/types/books'
+import { BookSearchInfo, SearchCategory } from '@/types/books'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -38,15 +38,13 @@ const schema = z.object({
   keyword: z.string(),
 })
 
-export type FormData = z.infer<typeof schema>
-
 export interface SearchInputProps {
-  data: FormData
-  onSearch: (data: FormData) => void
+  data: BookSearchInfo
+  onSearch: (data: BookSearchInfo) => void
 }
 
 const SearchInput = ({ data, onSearch }: SearchInputProps) => {
-  const form = useForm<FormData>({
+  const form = useForm<BookSearchInfo>({
     resolver: zodResolver(schema),
     mode: 'onSubmit',
     defaultValues: {
@@ -56,14 +54,14 @@ const SearchInput = ({ data, onSearch }: SearchInputProps) => {
   })
   const { control, handleSubmit } = form
 
-  const onSubmit = (currentData: FormData) => {
+  const onSubmit = (currentData: BookSearchInfo) => {
     onSearch(currentData)
   }
 
   return (
     <Form {...form}>
       <form
-        className="mb-6 ml-auto flex max-w-96"
+        className="mb-6 flex w-full md:ml-auto md:max-w-96"
         onSubmit={handleSubmit(onSubmit)}
       >
         <FormField

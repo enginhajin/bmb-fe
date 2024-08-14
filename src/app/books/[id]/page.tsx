@@ -2,14 +2,14 @@
 
 import { BookInfo } from '@/components/organisms/BookInfo'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
-import { BookInfoData, BookWishData } from '@/types/books'
+import { BookDetailInfo, BookWishInfo } from '@/types/books'
 import { toast, Toaster } from 'sonner'
 import { Heart } from 'lucide-react'
 import { Dialog } from '@/components/ui/dialog'
 import { useState } from 'react'
 import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
 
-const mockData: BookInfoData = {
+const mockData: BookDetailInfo = {
   id: '201',
   isbn: '9784479394358',
   title:
@@ -31,7 +31,7 @@ const mockData: BookInfoData = {
   status: 'CHECKEDOUT',
 }
 
-const mockWishData: BookWishData = {
+const mockWishData: BookWishInfo = {
   wished: false,
   wish_count: 5,
 }

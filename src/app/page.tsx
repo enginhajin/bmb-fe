@@ -4,17 +4,16 @@ import { Pagination } from '@/components/molecules/Pagination'
 import {
   SearchInput,
   selectItems as searchSelectItems,
-  FormData as SearchFormData,
 } from '@/components/molecules/SearchInput'
 import { BookList } from '@/components/organisms/BookList'
 import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
 import { Dialog } from '@/components/ui/dialog'
 import { useCustomSearchParams } from '@/hooks'
-import { BookListData, SearchCategory } from '@/types/books'
+import { BookListInfo, SearchCategory, BookSearchInfo } from '@/types/books'
 import { Suspense, useEffect, useState } from 'react'
 
-const mockData: BookListData = {
+const mockData: BookListInfo = {
   total_pages: 5,
   current_page: 1,
   page_size: 10,
@@ -100,7 +99,7 @@ function Page() {
   const [currentPage, setCurrentPage] = useState<string>(
     searchParams.page || '1',
   )
-  const [currentSearchData, setSearchData] = useState<SearchFormData>({
+  const [currentSearchData, setSearchData] = useState<BookSearchInfo>({
     category: searchSelectItems.some(
       (item) => item.category === searchParams.category,
     )
@@ -114,7 +113,7 @@ function Page() {
     setCurrentPage(String(page))
   }
 
-  const handleSearch = (data: SearchFormData) => {
+  const handleSearch = (data: BookSearchInfo) => {
     setSearchData(data)
   }
 
@@ -138,8 +137,12 @@ function Page() {
   }, [currentSearchData])
 
   return (
-    <GnbTemplate>
-      <SearchInput data={currentSearchData} onSearch={handleSearch} />
+    <GnbTemplate
+      title="図書リスト"
+      headerContent={
+        <SearchInput data={currentSearchData} onSearch={handleSearch} />
+      }
+    >
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <BookList data={mockData} setOpenDialog={setOpenDialog} />
         <ReturnDialogContent setOpenDialog={setOpenDialog} />
