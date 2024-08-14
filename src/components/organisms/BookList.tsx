@@ -1,4 +1,4 @@
-import { BookItem, BookListData } from '@/types/books'
+import { BookListItem, BookListInfo } from '@/types/books'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,7 @@ import { Dispatch, SetStateAction } from 'react'
 import { useRouter } from 'next/navigation'
 
 export interface BooksListProps {
-  data: BookListData
+  data: BookListInfo
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
 
@@ -42,7 +42,7 @@ const BookList = ({ data, setOpenDialog }: BooksListProps) => {
   return (
     <>
       <ul className="-m-3 flex flex-wrap outline-blue-200">
-        {data.books.map((item: BookItem) => {
+        {data.books.map((item: BookListItem) => {
           const { id, title, author_name, status, wish_count, wished } = item
           return (
             <li

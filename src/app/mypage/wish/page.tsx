@@ -1,26 +1,26 @@
 'use client'
 
-import { Pagination } from '@/components/molecules/Pagination'
+import { Suspense, useState, useEffect } from 'react'
 import {
   SearchInput,
   selectItems as searchSelectItems,
 } from '@/components/molecules/SearchInput'
-import { BookList } from '@/components/organisms/BookList'
-import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
+import { BooksListView } from '@/components/organisms/BooksListView'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
-import { Dialog } from '@/components/ui/dialog'
+import { BookSearchInfo, BookWishListInfo, SearchCategory } from '@/types/books'
 import { useCustomSearchParams } from '@/hooks'
-import { BookListInfo, SearchCategory, BookSearchInfo } from '@/types/books'
-import { Suspense, useEffect, useState } from 'react'
+import { Pagination } from '@/components/molecules/Pagination'
+import { Dialog } from '@/components/ui/dialog'
+import { DeleteDialogContent } from '@/components/organisms/DeleteDialogContent'
 
-const mockData: BookListInfo = {
-  total_pages: 5,
+const mockData: BookWishListInfo = {
+  total_pages: 6,
   current_page: 1,
   page_size: 10,
-  total_items: 50,
+  total_items: 60,
   category: 'TITLE',
   keyword: 'test',
-  books: [
+  wishes: [
     {
       id: '101',
       isbn: '9784479394358',
@@ -30,8 +30,6 @@ const mockData: BookListInfo = {
       author_name: 'かまど・みくのしん',
       publisher_name: '大和書房',
       status: 'AVALIABLE',
-      wish_count: 5,
-      wished: true,
     },
     {
       id: '201',
@@ -41,8 +39,6 @@ const mockData: BookListInfo = {
       author_name: '坂口恭平',
       publisher_name: '大和書房',
       status: 'UNAVALIABLE',
-      wish_count: 0,
-      wished: false,
     },
     {
       id: '301',
@@ -53,8 +49,6 @@ const mockData: BookListInfo = {
       author_name: 'かまど・みくのしん',
       publisher_name: '大和書房',
       status: 'CHECKEDOUT',
-      wish_count: 5,
-      wished: false,
     },
     {
       id: '401',
@@ -64,8 +58,6 @@ const mockData: BookListInfo = {
       author_name: '坂口恭平',
       publisher_name: '大和書房',
       status: 'AVALIABLE',
-      wish_count: 0,
-      wished: false,
     },
     {
       id: '501',
@@ -76,8 +68,6 @@ const mockData: BookListInfo = {
       author_name: 'かまど・みくのしん',
       publisher_name: '大和書房',
       status: 'AVALIABLE',
-      wish_count: 5,
-      wished: true,
     },
     {
       id: '601',
@@ -87,8 +77,6 @@ const mockData: BookListInfo = {
       author_name: '坂口恭平',
       publisher_name: '大和書房',
       status: 'AVALIABLE',
-      wish_count: 0,
-      wished: false,
     },
   ],
 }
@@ -107,6 +95,7 @@ function Page() {
       : 'ALL',
     keyword: searchParams.keyword || '',
   })
+
   const [openDialog, setOpenDialog] = useState<boolean>(false)
 
   const handlePageChange = (page: number) => {
@@ -138,14 +127,17 @@ function Page() {
 
   return (
     <GnbTemplate
-      title="図書リスト"
+      title="お気に入りリスト"
       headerContent={
         <SearchInput data={currentSearchData} onSearch={handleSearch} />
       }
     >
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <BookList data={mockData} setOpenDialog={setOpenDialog} />
-        <ReturnDialogContent setOpenDialog={setOpenDialog} />
+        <BooksListView data={mockData} setOpenDialog={setOpenDialog} />
+        <DeleteDialogContent
+          title="お気に入りから削除しますか？"
+          setOpenDialog={setOpenDialog}
+        />
       </Dialog>
       <Pagination
         total_pages={total_pages}
@@ -156,7 +148,7 @@ function Page() {
   )
 }
 
-export default function HomePage() {
+export default function WishListPage() {
   return (
     <Suspense>
       <Page />

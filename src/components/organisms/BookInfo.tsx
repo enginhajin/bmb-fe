@@ -2,12 +2,12 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Heart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { BookInfoData, BookWishData } from '@/types/books'
+import { BookDetailInfo, BookWishInfo } from '@/types/books'
 import { Dispatch, SetStateAction } from 'react'
 
 export interface BookInfoProps {
-  bookData: BookInfoData
-  wishData: BookWishData
+  bookData: BookDetailInfo
+  wishData: BookWishInfo
   onToggleWish: (wished: boolean) => void
   setOpenDialog: Dispatch<SetStateAction<boolean>>
 }
