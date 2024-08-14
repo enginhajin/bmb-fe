@@ -1,6 +1,6 @@
 'use client'
 
-import { useWindowSize } from '@/hooks'
+import { useCustomWindowSize } from '@/hooks'
 import { Book, Bookmark, Heart, Menu, SquarePlus } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -28,7 +28,7 @@ const Gnb = () => {
     setIsExpand(!isExpand)
   }
 
-  const { width } = useWindowSize()
+  const { width } = useCustomWindowSize()
 
   useEffect(() => {
     if (width && width > 1024) {
