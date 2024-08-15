@@ -3,12 +3,15 @@ export type SearchCategory = 'ALL' | 'TITLE' | 'AUTHOR' | 'PUBLISHER'
 
 export interface BookInfo {
   id: string
+  book_id?: string
   isbn: string
   title: string
   thumbnail: string
   author_name: string
   publisher_name: string
   status: BookStatus
+  loan_at?: string
+  return_at?: string | null
 }
 
 export interface BookDetailInfo extends BookInfo {
@@ -33,6 +36,7 @@ export interface BookSearchInfo {
   category: SearchCategory
   keyword: string
 }
+
 export interface BookListItem extends BookInfo, BookWishInfo {}
 
 export interface BookListInfo extends ListPageInfo, BookSearchInfo {
@@ -40,5 +44,9 @@ export interface BookListInfo extends ListPageInfo, BookSearchInfo {
 }
 
 export interface BookWishListInfo extends ListPageInfo, BookSearchInfo {
-  wishes: BookInfo[]
+  books: BookInfo[]
+}
+
+export interface BookLoanListInfo extends ListPageInfo, BookSearchInfo {
+  books: BookInfo[]
 }

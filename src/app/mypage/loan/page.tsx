@@ -4,13 +4,13 @@ import { Suspense, useState } from 'react'
 import { SearchInput } from '@/components/molecules/SearchInput'
 import { BooksListView } from '@/components/organisms/BooksListView'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
-import { BookWishListInfo } from '@/types/books'
+import { BookLoanListInfo } from '@/types/books'
 import { useCustomPagination, useCustomSearchBooks } from '@/hooks'
 import { Pagination } from '@/components/molecules/Pagination'
 import { Dialog } from '@/components/ui/dialog'
-import { DeleteDialogContent } from '@/components/organisms/DeleteDialogContent'
+import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
 
-const mockData: BookWishListInfo = {
+const mockData: BookLoanListInfo = {
   total_pages: 6,
   current_page: 1,
   page_size: 10,
@@ -26,7 +26,9 @@ const mockData: BookWishListInfo = {
       thumbnail: '/img/book/book_thumbnail.jpg',
       author_name: 'かまど・みくのしん',
       publisher_name: '大和書房',
-      status: 'AVALIABLE',
+      status: 'CHECKEDOUT',
+      loan_at: '2024-08-08',
+      return_at: '2024-08-08',
     },
     {
       id: '201',
@@ -35,7 +37,9 @@ const mockData: BookWishListInfo = {
       thumbnail: '/img/book/book_thumbnail.jpg',
       author_name: '坂口恭平',
       publisher_name: '大和書房',
-      status: 'UNAVALIABLE',
+      status: 'CHECKEDOUT',
+      loan_at: '2024-08-08',
+      return_at: '',
     },
     {
       id: '301',
@@ -45,7 +49,9 @@ const mockData: BookWishListInfo = {
       thumbnail: '/img/book/book_thumbnail.jpg',
       author_name: 'かまど・みくのしん',
       publisher_name: '大和書房',
-      status: 'AVALIABLE',
+      status: 'CHECKEDOUT',
+      loan_at: '2024-08-08',
+      return_at: '',
     },
     {
       id: '401',
@@ -54,7 +60,9 @@ const mockData: BookWishListInfo = {
       thumbnail: '/img/book/book_thumbnail.jpg',
       author_name: '坂口恭平',
       publisher_name: '大和書房',
-      status: 'AVALIABLE',
+      status: 'CHECKEDOUT',
+      loan_at: '2024-08-08',
+      return_at: '',
     },
     {
       id: '501',
@@ -64,7 +72,9 @@ const mockData: BookWishListInfo = {
       thumbnail: '/img/book/book_thumbnail.jpg',
       author_name: 'かまど・みくのしん',
       publisher_name: '大和書房',
-      status: 'AVALIABLE',
+      status: 'CHECKEDOUT',
+      loan_at: '2024-08-08',
+      return_at: '',
     },
     {
       id: '601',
@@ -73,7 +83,9 @@ const mockData: BookWishListInfo = {
       thumbnail: '/img/book/book_thumbnail.jpg',
       author_name: '坂口恭平',
       publisher_name: '大和書房',
-      status: 'AVALIABLE',
+      status: 'CHECKEDOUT',
+      loan_at: '2024-08-08',
+      return_at: '',
     },
   ],
 }
@@ -82,24 +94,25 @@ function Page() {
   const { total_pages } = mockData
   const { currentPage, handlePageChange } = useCustomPagination(total_pages)
   const { currentSearchData, handleSearch } = useCustomSearchBooks()
-  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false)
+  const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false)
 
   return (
     <GnbTemplate
-      title="お気に入りリスト"
+      title="貸出リスト"
       headerContent={
         <SearchInput data={currentSearchData} onSearch={handleSearch} />
       }
     >
-      <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+      <Dialog open={openReturnDialog} onOpenChange={setOpenReturnDialog}>
         <BooksListView
           data={mockData}
-          onDelete={() => setOpenDeleteDialog(true)}
-          isVisibleDeleteButton
+          onReturn={() => {
+            setOpenReturnDialog(true)
+          }}
         />
-        <DeleteDialogContent
+        <ReturnDialogContent
           onSubmit={() => {
-            setOpenDeleteDialog(false)
+            setOpenReturnDialog(false)
           }}
         />
       </Dialog>
@@ -112,7 +125,7 @@ function Page() {
   )
 }
 
-export default function WishListPage() {
+export default function LoanListPage() {
   return (
     <Suspense>
       <Page />
