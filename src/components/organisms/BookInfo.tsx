@@ -3,20 +3,21 @@ import { Button } from '@/components/ui/button'
 import { Heart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { BookDetailInfo, BookWishInfo } from '@/types/books'
-import { Dispatch, SetStateAction } from 'react'
 
 export interface BookInfoProps {
   bookData: BookDetailInfo
   wishData: BookWishInfo
   onToggleWish: (wished: boolean) => void
-  setOpenReturnDialog: Dispatch<SetStateAction<boolean>>
+  onLoan: () => void
+  onReturn: () => void
 }
 
 const BookInfo = ({
   bookData,
   wishData,
   onToggleWish,
-  setOpenReturnDialog,
+  onLoan,
+  onReturn,
 }: BookInfoProps) => {
   const router = useRouter()
   const {
@@ -33,10 +34,6 @@ const BookInfo = ({
 
   const navigateToBack = () => {
     router.back()
-  }
-
-  const navigateToLoanPage = () => {
-    router.push('/')
   }
 
   return (
@@ -95,9 +92,9 @@ const BookInfo = ({
               disabled={status === 'UNAVALIABLE'}
               onClick={() => {
                 if (status === 'CHECKEDOUT') {
-                  setOpenReturnDialog(true)
+                  onReturn()
                 } else {
-                  navigateToLoanPage()
+                  onLoan()
                 }
               }}
             >

@@ -4,17 +4,14 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Heart } from 'lucide-react'
 import { toast, Toaster } from 'sonner'
-import { Dispatch, SetStateAction } from 'react'
-import { useCustomNavigation } from '@/hooks'
 
 export interface BooksGridViewProps {
   data: BookListInfo
-  setOpenReturnDialog: Dispatch<SetStateAction<boolean>>
+  onLoan: () => void
+  onReturn: () => void
 }
 
-const BooksGridView = ({ data, setOpenReturnDialog }: BooksGridViewProps) => {
-  const { navigateToLoan } = useCustomNavigation()
-
+const BooksGridView = ({ data, onLoan, onReturn }: BooksGridViewProps) => {
   const handleToggleWish = (isWished: boolean) => {
     toast(
       <span className="flex gap-2">
@@ -92,9 +89,9 @@ const BooksGridView = ({ data, setOpenReturnDialog }: BooksGridViewProps) => {
                     disabled={status === 'UNAVALIABLE'}
                     onClick={() => {
                       if (status === 'CHECKEDOUT') {
-                        setOpenReturnDialog(true)
+                        onReturn()
                       } else {
-                        navigateToLoan(id)
+                        onLoan()
                       }
                     }}
                   >

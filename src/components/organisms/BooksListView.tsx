@@ -2,11 +2,11 @@ import { BookLoanListInfo, BookWishListInfo } from '@/types/books'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { useCustomNavigation } from '@/hooks'
 
 export interface BooksListViewProps {
   data: BookWishListInfo | BookLoanListInfo
   onDelete?: () => void
+  onLoan?: () => void
   onReturn?: () => void
   isVisibleDeleteButton?: boolean
 }
@@ -15,10 +15,9 @@ const BooksListView = ({
   data,
   isVisibleDeleteButton = false,
   onDelete,
+  onLoan,
   onReturn,
 }: BooksListViewProps) => {
-  const { navigateToLoan } = useCustomNavigation()
-
   return (
     <ul className="-m-3 flex flex-wrap">
       {data.books.map((item) => {
@@ -109,8 +108,9 @@ const BooksListView = ({
                     onClick={() => {
                       if (status === 'CHECKEDOUT' && onReturn) {
                         onReturn()
-                      } else {
-                        navigateToLoan(id)
+                      }
+                      if (status === 'AVALIABLE' && onLoan) {
+                        onLoan()
                       }
                     }}
                   >

@@ -3,6 +3,7 @@
 import { Pagination } from '@/components/molecules/Pagination'
 import { SearchInput } from '@/components/molecules/SearchInput'
 import { BooksGridView } from '@/components/organisms/BooksGridView'
+import { LoanDialogContent } from '@/components/organisms/LoanDialogContent'
 import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
 import { Dialog } from '@/components/ui/dialog'
@@ -95,6 +96,7 @@ function Page() {
   const { currentPage, handlePageChange } = useCustomPagination(total_pages)
   const { currentSearchData, handleSearch } = useCustomSearchBooks()
   const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false)
+  const [openLoanDialog, setOpenLoanDialog] = useState<boolean>(false)
 
   return (
     <GnbTemplate
@@ -103,14 +105,22 @@ function Page() {
         <SearchInput data={currentSearchData} onSearch={handleSearch} />
       }
     >
+      <BooksGridView
+        data={mockData}
+        onLoan={() => setOpenLoanDialog(true)}
+        onReturn={() => setOpenReturnDialog(true)}
+      />
       <Dialog open={openReturnDialog} onOpenChange={setOpenReturnDialog}>
-        <BooksGridView
-          data={mockData}
-          setOpenReturnDialog={setOpenReturnDialog}
-        />
         <ReturnDialogContent
           onSubmit={() => {
             setOpenReturnDialog(false)
+          }}
+        />
+      </Dialog>
+      <Dialog open={openLoanDialog} onOpenChange={setOpenLoanDialog}>
+        <LoanDialogContent
+          onSubmit={() => {
+            setOpenLoanDialog(false)
           }}
         />
       </Dialog>

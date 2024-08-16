@@ -25,7 +25,7 @@ const BookDialogContent = ({
   cancelButtonText = 'いいえ',
 }: BookDialogContentProps) => {
   return (
-    <DialogContent className="max-w-96">
+    <DialogContent className="w-96 max-w-[calc(100%-3rem)] rounded-md">
       <DialogHeader>
         <div className="mx-auto mb-4">{icon}</div>
         <DialogTitle className="text-center">{title}</DialogTitle>
