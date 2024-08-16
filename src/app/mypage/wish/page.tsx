@@ -9,6 +9,7 @@ import { useCustomPagination, useCustomSearchBooks } from '@/hooks'
 import { Pagination } from '@/components/molecules/Pagination'
 import { Dialog } from '@/components/ui/dialog'
 import { DeleteDialogContent } from '@/components/organisms/DeleteDialogContent'
+import { LoanDialogContent } from '@/components/organisms/LoanDialogContent'
 
 const mockData: BookWishListInfo = {
   total_pages: 6,
@@ -83,6 +84,7 @@ function Page() {
   const { currentPage, handlePageChange } = useCustomPagination(total_pages)
   const { currentSearchData, handleSearch } = useCustomSearchBooks()
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false)
+  const [openLoanDialog, setOpenLoanDialog] = useState<boolean>(false)
 
   return (
     <GnbTemplate
@@ -91,15 +93,23 @@ function Page() {
         <SearchInput data={currentSearchData} onSearch={handleSearch} />
       }
     >
+      <BooksListView
+        data={mockData}
+        onDelete={() => setOpenDeleteDialog(true)}
+        onLoan={() => setOpenLoanDialog(true)}
+        isVisibleDeleteButton
+      />
       <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
-        <BooksListView
-          data={mockData}
-          onDelete={() => setOpenDeleteDialog(true)}
-          isVisibleDeleteButton
-        />
         <DeleteDialogContent
           onSubmit={() => {
             setOpenDeleteDialog(false)
+          }}
+        />
+      </Dialog>
+      <Dialog open={openLoanDialog} onOpenChange={setOpenLoanDialog}>
+        <LoanDialogContent
+          onSubmit={() => {
+            setOpenLoanDialog(false)
           }}
         />
       </Dialog>

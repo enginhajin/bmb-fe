@@ -8,6 +8,7 @@ import { Heart } from 'lucide-react'
 import { Dialog } from '@/components/ui/dialog'
 import { useState } from 'react'
 import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
+import { LoanDialogContent } from '@/components/organisms/LoanDialogContent'
 
 const mockData: BookDetailInfo = {
   id: '201',
@@ -28,7 +29,7 @@ const mockData: BookDetailInfo = {
   author_name: 'かまど・みくのしん',
   publisher_name: '大和書房',
   publisher_date: '2024-09-19',
-  status: 'CHECKEDOUT',
+  status: 'AVALIABLE',
 }
 
 const mockWishData: BookWishInfo = {
@@ -38,6 +39,8 @@ const mockWishData: BookWishInfo = {
 
 export default function BookPage() {
   const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false)
+  const [openLoanDialog, setOpenLoanDialog] = useState<boolean>(false)
+
   const handleToggleWish = (wished: boolean) => {
     toast(
       <span className="flex gap-2">
@@ -61,16 +64,24 @@ export default function BookPage() {
 
   return (
     <GnbTemplate>
+      <BookInfo
+        bookData={mockData}
+        wishData={mockWishData}
+        onToggleWish={handleToggleWish}
+        onLoan={() => setOpenLoanDialog(true)}
+        onReturn={() => setOpenReturnDialog(true)}
+      />
       <Dialog open={openReturnDialog} onOpenChange={setOpenReturnDialog}>
-        <BookInfo
-          bookData={mockData}
-          wishData={mockWishData}
-          onToggleWish={handleToggleWish}
-          setOpenReturnDialog={setOpenReturnDialog}
-        />
         <ReturnDialogContent
           onSubmit={() => {
             setOpenReturnDialog(false)
+          }}
+        />
+      </Dialog>
+      <Dialog open={openLoanDialog} onOpenChange={setOpenLoanDialog}>
+        <LoanDialogContent
+          onSubmit={() => {
+            setOpenLoanDialog(false)
           }}
         />
       </Dialog>
