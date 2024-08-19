@@ -71,7 +71,7 @@ const BooksGridView = ({ data, onLoan, onReturn }: BooksGridViewProps) => {
                     size="icon"
                     className="group w-auto pl-0 text-red-400 hover:bg-transparent hover:text-red-400"
                     onClick={() => {
-                      handleToggleWish(wished)
+                      if (wished) handleToggleWish(wished)
                     }}
                   >
                     <span className="relative mr-1">

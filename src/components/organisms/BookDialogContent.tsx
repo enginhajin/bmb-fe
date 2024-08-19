@@ -32,7 +32,9 @@ const BookDialogContent = ({
       <DialogHeader>
         <div className="mx-auto mb-4">{icon}</div>
         <DialogTitle className="text-center">{title}</DialogTitle>
-        <DialogDescription>{description}</DialogDescription>
+        <DialogDescription className={`text-center ${description && 'pt-4'}`}>
+          {description}
+        </DialogDescription>
       </DialogHeader>
       <div className="mt-2 text-center">
         <Button variant={variant} type="submit" onClick={onSubmit}>
