@@ -50,3 +50,7 @@ export interface BookWishListInfo extends ListPageInfo, BookSearchInfo {
 export interface BookLoanListInfo extends ListPageInfo, BookSearchInfo {
   books: BookInfo[]
 }
+
+export interface BookApplicationInfo extends BookDetailInfo {
+  thumbnail: File
+}
