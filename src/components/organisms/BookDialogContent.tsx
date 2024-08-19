@@ -1,6 +1,7 @@
 import {
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
@@ -10,6 +11,7 @@ import { ReactNode } from 'react'
 export interface BookDialogContentProps {
   variant?: 'default' | 'destructive'
   title: string
+  description?: string | ReactNode
   icon?: ReactNode
   onSubmit: () => void
   submitButtonText?: string
@@ -19,6 +21,7 @@ export interface BookDialogContentProps {
 const BookDialogContent = ({
   variant = 'default',
   title,
+  description,
   icon,
   onSubmit,
   submitButtonText = 'はい',
@@ -29,6 +32,7 @@ const BookDialogContent = ({
       <DialogHeader>
         <div className="mx-auto mb-4">{icon}</div>
         <DialogTitle className="text-center">{title}</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
       <div className="mt-2 text-center">
         <Button variant={variant} type="submit" onClick={onSubmit}>
