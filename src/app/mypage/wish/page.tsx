@@ -4,14 +4,14 @@ import { Suspense, useState } from 'react'
 import { SearchInput } from '@/components/molecules/SearchInput'
 import { BooksListView } from '@/components/organisms/BooksListView'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
-import { BookWishListInfo } from '@/types/books'
+import { BookListInfo } from '@/types/books'
 import { useCustomPagination, useCustomSearchBooks } from '@/hooks'
 import { Pagination } from '@/components/molecules/Pagination'
 import { Dialog } from '@/components/ui/dialog'
 import { DeleteDialogContent } from '@/components/organisms/DeleteDialogContent'
 import { LoanDialogContent } from '@/components/organisms/LoanDialogContent'
 
-const mockData: BookWishListInfo = {
+const mockData: BookListInfo = {
   total_pages: 6,
   current_page: 1,
   page_size: 10,
@@ -97,7 +97,6 @@ function Page() {
         data={mockData}
         onDelete={() => setOpenDeleteDialog(true)}
         onLoan={() => setOpenLoanDialog(true)}
-        isVisibleDeleteButton
       />
       <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
         <DeleteDialogContent

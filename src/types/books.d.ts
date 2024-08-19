@@ -12,6 +12,9 @@ export interface BookInfo {
   status: BookStatus
   loan_at?: string
   return_at?: string | null
+  wished?: boolean
+  wish_count?: number
+  loans?: BookLentalInfo[]
 }
 
 export interface BookDetailInfo extends BookInfo {
@@ -23,6 +26,14 @@ export interface BookDetailInfo extends BookInfo {
 export interface BookWishInfo {
   wished: boolean
   wish_count: number
+}
+
+export interface BookLentalInfo {
+  id: string
+  user_id: string
+  nickname: string
+  loan_at: string
+  return_at: string | null
 }
 
 export interface ListPageInfo {
@@ -40,14 +51,6 @@ export interface BookSearchInfo {
 export interface BookListItem extends BookInfo, BookWishInfo {}
 
 export interface BookListInfo extends ListPageInfo, BookSearchInfo {
-  books: BookListItem[]
-}
-
-export interface BookWishListInfo extends ListPageInfo, BookSearchInfo {
-  books: BookInfo[]
-}
-
-export interface BookLoanListInfo extends ListPageInfo, BookSearchInfo {
   books: BookInfo[]
 }
 

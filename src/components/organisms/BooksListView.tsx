@@ -1,28 +1,33 @@
-import { BookLoanListInfo, BookWishListInfo } from '@/types/books'
+import { BookListInfo } from '@/types/books'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Heart } from 'lucide-react'
 
 export interface BooksListViewProps {
-  data: BookWishListInfo | BookLoanListInfo
+  data: BookListInfo
   onDelete?: () => void
   onLoan?: () => void
   onReturn?: () => void
-  isVisibleDeleteButton?: boolean
+  onOpenLoanSheet?: (isbn: string) => void
+  isVisibleBadge?: boolean
 }
 
 const BooksListView = ({
   data,
-  isVisibleDeleteButton = false,
   onDelete,
   onLoan,
   onReturn,
+  onOpenLoanSheet,
+  isVisibleBadge = false,
 }: BooksListViewProps) => {
   return (
     <ul className="-m-3 flex flex-wrap">
       {data.books.map((item) => {
         const {
           id,
+          isbn,
           title,
           thumbnail,
           author_name,
@@ -30,6 +35,7 @@ const BooksListView = ({
           status,
           loan_at,
           return_at,
+          wish_count,
         } = item
 
         return (
@@ -37,7 +43,7 @@ const BooksListView = ({
             <div className="flex size-full flex-wrap rounded-md border">
               <Link
                 href={`/books/${id}`}
-                className="block w-2/6 flex-shrink-0 hover:opacity-70 xs:w-[9rem]"
+                className="relative block w-2/6 flex-shrink-0 hover:opacity-70 xs:w-[9rem]"
               >
                 <Image
                   src={thumbnail}
@@ -46,6 +52,14 @@ const BooksListView = ({
                   alt="book1"
                   className="aspect-[7/10] size-full"
                 />
+                {isVisibleBadge && (
+                  <Badge
+                    variant={status === 'AVALIABLE' ? 'default' : 'secondary'}
+                    className="absolute left-2 top-2"
+                  >
+                    {status === 'AVALIABLE' ? '保有中' : '貸出中'}
+                  </Badge>
+                )}
               </Link>
               <div className="flex w-4/6 flex-col p-4 xs:w-[calc(100%-9rem)] lg:flex-row">
                 <div className="w-full">
@@ -97,35 +111,73 @@ const BooksListView = ({
                         <span>{return_at}</span>
                       </li>
                     )}
+                    {wish_count !== undefined && (
+                      <li
+                        className={`mt-1 inline-block xs:flex xs:w-full ${onReturn && 'mt-0 md:mt-1 md:w-1/2'}`}
+                      >
+                        <strong className="hidden w-14 flex-shrink-0 items-center xs:flex">
+                          <Heart
+                            className="text-red-400"
+                            width={16}
+                            height={16}
+                          />
+                        </strong>
+                        <span className="mx-1 xs:hidden">/</span>
+                        <span className="relative pl-4 xs:pl-0">
+                          <span className="absolute left-0 top-1/2 -mt-[0.375rem] xs:hidden">
+                            <Heart
+                              className="text-red-400"
+                              width={12}
+                              height={12}
+                            />
+                          </span>
+                          {wish_count}
+                        </span>
+                      </li>
+                    )}
                   </ul>
                 </div>
                 <div className="mt-2 flex w-full flex-grow items-end justify-end lg:w-28 lg:flex-shrink-0 lg:flex-col lg:items-center lg:justify-center">
-                  <Button
-                    variant={status === 'CHECKEDOUT' ? 'outline' : 'default'}
-                    size="sm"
-                    className={`w-1/2 max-w-28 lg:w-full ${status === 'UNAVALIABLE' && 'bg-tertiary'} ${status === 'CHECKEDOUT' && 'border-2 border-primary text-primary hover:bg-primary hover:text-white'}`}
-                    disabled={status === 'UNAVALIABLE'}
-                    onClick={() => {
-                      if (status === 'CHECKEDOUT' && onReturn) {
-                        onReturn()
-                      }
-                      if (status === 'AVALIABLE' && onLoan) {
-                        onLoan()
-                      }
-                    }}
-                  >
-                    {status === 'AVALIABLE'
-                      ? '貸出'
-                      : status === 'CHECKEDOUT'
-                        ? '返却'
-                        : '不可'}
-                  </Button>
-                  {isVisibleDeleteButton && (
+                  {(onLoan || onReturn) && (
+                    <Button
+                      variant={status === 'CHECKEDOUT' ? 'outline' : 'default'}
+                      size="sm"
+                      className={`w-1/2 max-w-28 lg:w-full ${status === 'UNAVALIABLE' && 'bg-tertiary'} ${status === 'CHECKEDOUT' && 'border-2 border-primary text-primary hover:bg-primary hover:text-white'}`}
+                      disabled={status === 'UNAVALIABLE'}
+                      onClick={() => {
+                        if (status === 'CHECKEDOUT' && onReturn) {
+                          onReturn()
+                        }
+                        if (status === 'AVALIABLE' && onLoan) {
+                          onLoan()
+                        }
+                      }}
+                    >
+                      {status === 'AVALIABLE'
+                        ? '貸出'
+                        : status === 'CHECKEDOUT'
+                          ? '返却'
+                          : '不可'}
+                    </Button>
+                  )}
+                  {onOpenLoanSheet && (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="w-1/2 max-w-28 lg:w-full"
+                      onClick={() => {
+                        onOpenLoanSheet(isbn)
+                      }}
+                    >
+                      貸出状況
+                    </Button>
+                  )}
+                  {onDelete && (
                     <Button
                       variant="outline"
                       size="sm"
                       className="ml-2 w-1/2 max-w-28 border-2 border-destructive text-destructive hover:bg-destructive hover:text-white lg:ml-0 lg:mt-2 lg:w-full"
-                      onClick={onDelete && onDelete}
+                      onClick={onDelete}
                     >
                       削除
                     </Button>
