@@ -4,10 +4,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import { BookInfo, BookLentalInfo } from '@/types/books'
+import { BookDetailInfo, BookInfo, BookLentalInfo } from '@/types/books'
 
 export interface LoanSheetConentProps {
-  data: BookInfo
+  data: BookInfo | BookDetailInfo
 }
 
 const LoanSheetConent = ({ data }: LoanSheetConentProps) => {
