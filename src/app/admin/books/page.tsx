@@ -152,6 +152,7 @@ function Page() {
           handleLoanSheetOpen(isbn)
         }}
         isVisibleBadge
+        isAdmin
       />
       <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
         <DeleteDialogContent

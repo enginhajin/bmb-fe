@@ -12,6 +12,7 @@ export interface BooksListViewProps {
   onReturn?: () => void
   onOpenLoanSheet?: (isbn: string) => void
   isVisibleBadge?: boolean
+  isAdmin?: boolean
 }
 
 const BooksListView = ({
@@ -21,6 +22,7 @@ const BooksListView = ({
   onReturn,
   onOpenLoanSheet,
   isVisibleBadge = false,
+  isAdmin = false,
 }: BooksListViewProps) => {
   return (
     <ul className="-m-3 flex flex-wrap">
@@ -42,7 +44,7 @@ const BooksListView = ({
           <li key={id} className="w-full p-3">
             <div className="flex size-full flex-wrap rounded-md border">
               <Link
-                href={`/books/${id}`}
+                href={isAdmin ? `/admin/books/${id}` : `/books/${id}`}
                 className="relative block w-2/6 flex-shrink-0 hover:opacity-70 xs:w-[9rem]"
               >
                 <Image
@@ -54,7 +56,7 @@ const BooksListView = ({
                 />
                 {isVisibleBadge && (
                   <Badge
-                    variant={status === 'AVALIABLE' ? 'default' : 'secondary'}
+                    variant={status === 'AVALIABLE' ? 'default' : 'tertiary'}
                     className="absolute left-2 top-2"
                   >
                     {status === 'AVALIABLE' ? '保有中' : '貸出中'}
@@ -64,7 +66,7 @@ const BooksListView = ({
               <div className="flex w-4/6 flex-col p-4 xs:w-[calc(100%-9rem)] lg:flex-row">
                 <div className="w-full">
                   <Link
-                    href={`/books/${id}`}
+                    href={isAdmin ? `/admin/books/${id}` : `/books/${id}`}
                     className={`text-md line-clamp-1 font-normal hover:text-primary hover:underline min-[375px]:line-clamp-2 md:text-lg ${onReturn && 'min-[375px]:line-clamp-1 md:line-clamp-2'}`}
                   >
                     {title}
