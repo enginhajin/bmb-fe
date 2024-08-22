@@ -63,11 +63,11 @@ const Gnb = () => {
 
   return (
     <div
-      className={`fixed -left-56 top-0 z-40 h-screen w-56 flex-shrink-0 bg-primary transition-[left] duration-500 lg:left-0 lg:[&+div]:pl-56 ${isExpand && 'left-0'} ${!isLgExpand && 'lg:-left-56 lg:[&+div]:pl-0'}`}
+      className={`fixed -left-56 top-0 z-40 h-screen w-56 flex-shrink-0 bg-primary transition-[left] duration-500 lg:left-0 lg:[&+div]:pl-56 ${isExpand && 'left-0'} ${!isLgExpand && 'lg:!-left-56 lg:[&+div]:!pl-0'}`}
     >
       <button
         type="button"
-        className={`absolute right-[-3.5rem] top-4 flex h-10 w-10 items-center justify-center overflow-hidden rounded-md border border-solid border-input bg-white shadow-md transition-[right] duration-500 lg:right-[-1.5rem] ${isExpand && 'right-[-1.5rem]'} ${!isLgExpand && 'lg:!right-[-3.5rem]'}`}
+        className={`absolute right-[-3.5rem] top-4 flex h-10 w-10 items-center justify-center overflow-hidden rounded-md border border-solid border-input bg-white shadow-md transition-[right] duration-500 lg:right-[-1.5rem] ${isExpand && '!right-[-1.5rem]'} ${!isLgExpand && 'lg:right-[-3.5rem]'}`}
         onClick={toggleExpand}
       >
         <Menu className="shrink-0 text-primary" />
