@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Heart } from 'lucide-react'
 import { toast, Toaster } from 'sonner'
+import { PATHS } from '@/constants/path'
 
 export interface BooksGridViewProps {
   data: BookListInfo
@@ -44,7 +45,7 @@ const BooksGridView = ({ data, onLoan, onReturn }: BooksGridViewProps) => {
               className="w-6/12 p-3 outline-red-200 sm:w-4/12 md:w-3/12 lg:w-2/12"
             >
               <Link
-                href={`/books/${id}`}
+                href={`${PATHS.BOOKS}/${id}`}
                 className="block w-full hover:opacity-70"
               >
                 <Image
@@ -57,7 +58,7 @@ const BooksGridView = ({ data, onLoan, onReturn }: BooksGridViewProps) => {
               </Link>
               <div>
                 <Link
-                  href={`/books/${id}`}
+                  href={`${PATHS.BOOKS}/${id}`}
                   className="mt-2 line-clamp-2 h-10 text-sm font-normal hover:text-primary hover:underline"
                 >
                   {title}
