@@ -16,20 +16,22 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { CircleAlert } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { SignUpData } from '@/types/user'
+import { PATHS } from '@/constants/path'
 
 const passwordRegex =
   /^(?=.*[A-Za-z])(?=.*\d)|(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/
 
-const idRegex = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d]{4,10}$/
+const userIdRegex = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d]{4,10}$/
 
 const nicknameRegex = /^[ぁ-ゔァ-ヴー一-龯a-zA-Z0-9]{2,10}$/
 
 const schema = z.object({
-  id: z
+  user_id: z
     .string()
     .min(4, { message: '4文字以上入力してください。' })
     .max(10, { message: '10文字以下入力してください。' })
-    .regex(idRegex, {
+    .regex(userIdRegex, {
       message: '半角英数字を組み合わせてください。',
     }),
   password: z
@@ -48,14 +50,12 @@ const schema = z.object({
     }),
 })
 
-type FormData = z.infer<typeof schema>
-
 export default function SignUpPage() {
-  const form = useForm<FormData>({
+  const form = useForm<SignUpData>({
     resolver: zodResolver(schema),
     mode: 'onChange',
     defaultValues: {
-      id: '',
+      user_id: '',
       password: '',
       nickname: '',
     },
@@ -68,15 +68,21 @@ export default function SignUpPage() {
     setError,
   } = form
 
-  const id = watch('id')
+  const user_id = watch('user_id')
   const password = watch('password')
   const nickname = watch('nickname')
 
-  const isButtonDisabled = !(id && password && nickname && isDirty && isValid)
+  const isButtonDisabled = !(
+    user_id &&
+    password &&
+    nickname &&
+    isDirty &&
+    isValid
+  )
 
   function onSubmit() {
     setError(
-      'id',
+      'user_id',
       {
         type: 'dulicate',
         message: 'すでに使用中のIDです。別のIDを指定してください。',
@@ -90,7 +96,7 @@ export default function SignUpPage() {
       title="アカウントの作成"
       footer={
         <Link
-          href="/signin"
+          href={PATHS.SIGNIN}
           className="text-sm text-muted-foreground underline hover:text-primary"
         >
           ログインはこちら
@@ -101,7 +107,7 @@ export default function SignUpPage() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <FormField
             control={control}
-            name="id"
+            name="user_id"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>会員ID</FormLabel>

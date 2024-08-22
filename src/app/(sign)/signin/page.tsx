@@ -16,24 +16,24 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { SignTemplate } from '@/components/templates/SignTemplate'
+import { SignInData } from '@/types/user'
+import { PATHS } from '@/constants/path'
 
 const schema = z.object({
-  id: z.string().min(1, '必須項目です。'),
+  user_id: z.string().min(1, '必須項目です。'),
   password: z.string().min(1, '必須項目です。'),
 })
-
-type FormData = z.infer<typeof schema>
 
 export default function SignInPage() {
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | null>(
     null,
   )
 
-  const form = useForm<FormData>({
+  const form = useForm<SignInData>({
     resolver: zodResolver(schema),
     mode: 'onChange',
     defaultValues: {
-      id: '',
+      user_id: '',
       password: '',
     },
   })
@@ -45,14 +45,14 @@ export default function SignInPage() {
     setFocus,
   } = form
 
-  const id = watch('id')
+  const user_id = watch('user_id')
   const password = watch('password')
 
-  const isButtonDisabled = !(id && password && isDirty && isValid)
+  const isButtonDisabled = !(user_id && password && isDirty && isValid)
 
   function onSubmit() {
     setSubmitErrorMessage('IDおよびパスワードをご確認ください。')
-    setFocus('id')
+    setFocus('user_id')
   }
 
   return (
@@ -60,7 +60,7 @@ export default function SignInPage() {
       title="ログイン"
       footer={
         <Link
-          href="/signup"
+          href={PATHS.SIGNUP}
           className="text-sm text-muted-foreground underline hover:text-primary"
         >
           アカウントの作成はこちら
@@ -71,7 +71,7 @@ export default function SignInPage() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <FormField
             control={control}
-            name="id"
+            name="user_id"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>会員ID</FormLabel>
