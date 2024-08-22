@@ -1,28 +1,35 @@
+import { PATHS } from '@/constants/path'
 import { useRouter } from 'next/navigation'
 
 const useCustomNavigation = () => {
   const router = useRouter()
 
   const navigateToHome = () => {
-    router.push('/')
+    router.push(PATHS.HOME)
   }
   const navigateToSignIn = () => {
-    router.push('/signin')
+    router.push(PATHS.SIGNIN)
   }
   const navigateToSignUp = () => {
-    router.push('/signup')
+    router.push(PATHS.SIGNUP)
   }
   const navigateToBookDetail = (bookId: string) => {
-    router.push(`/books/${bookId}`)
+    router.push(`${PATHS.BOOKS}/${bookId}`)
   }
   const navigateToWishList = () => {
-    router.push('/mypage/wish')
+    router.push(PATHS.WISH)
   }
   const navigateToLoanList = () => {
-    router.push('/mypage/loan')
+    router.push(PATHS.LOAN)
   }
-  const navigateToLoan = (bookId: string) => {
-    router.push(`/books/loan/${bookId}`)
+  const navigateToAdminBooks = () => {
+    router.push(PATHS.ADMIN_BOOKS)
+  }
+  const navigateToAdminBookDetail = (bookId: string) => {
+    router.push(`${PATHS.ADMIN_BOOKS}/${bookId}`)
+  }
+  const navigateToBookApplication = () => {
+    router.push(PATHS.ADMIN_APPLICATION)
   }
 
   return {
@@ -32,7 +39,9 @@ const useCustomNavigation = () => {
     navigateToBookDetail,
     navigateToWishList,
     navigateToLoanList,
-    navigateToLoan,
+    navigateToAdminBooks,
+    navigateToAdminBookDetail,
+    navigateToBookApplication,
   }
 }
 

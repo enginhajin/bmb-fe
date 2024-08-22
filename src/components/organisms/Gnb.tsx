@@ -1,11 +1,13 @@
 'use client'
 
+import { PATHS } from '@/constants/path'
 import { useCustomWindowSize } from '@/hooks'
+import { useGnbStore, useUserStore } from '@/stores'
 import { Book, Bookmark, Heart, Menu, SquarePlus } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 
 interface GnbItem {
   href: string
@@ -13,36 +15,59 @@ interface GnbItem {
   icon: React.ReactNode
 }
 
-const GnbItems: GnbItem[] = [
-  { href: '/', label: '図書リスト', icon: <Book /> },
-  { href: '/mypage/wish', label: 'お気に入りリスト', icon: <Heart /> },
-  { href: '/mypage/loan', label: '貸出リスト', icon: <Bookmark /> },
-  { href: '/admin/books/application', label: '図書登録', icon: <SquarePlus /> },
+const gnbItems: GnbItem[] = [
+  {
+    href: PATHS.HOME,
+    label: '図書リスト',
+    icon: <Book />,
+  },
+  { href: PATHS.WISH, label: 'お気に入りリスト', icon: <Heart /> },
+  { href: PATHS.LOAN, label: '貸出リスト', icon: <Bookmark /> },
+]
+
+const adminGnbItems: GnbItem[] = [
+  {
+    href: PATHS.ADMIN_BOOKS,
+    label: '図書リスト',
+    icon: <Book />,
+  },
+  {
+    href: PATHS.ADMIN_APPLICATION,
+    label: '図書登録',
+    icon: <SquarePlus />,
+  },
 ]
 
 const Gnb = () => {
   const pathname = usePathname()
-  const [isExpand, setIsExpand] = useState<boolean>(false)
+  const { userInfo } = useUserStore()
+  const { role } = userInfo
+  const { isExpand, isLgExpand, setIsExpand, setIsLgExpand } = useGnbStore()
+
+  const menuItems = useMemo(() => {
+    return role === 'ADMIN' ? adminGnbItems : gnbItems
+  }, [role])
 
   const toggleExpand = () => {
-    setIsExpand(!isExpand)
+    if (width && width > 1024) {
+      setIsLgExpand(!isLgExpand)
+      if (isExpand) setIsExpand(false) // lg->md 閉めたらmd以下でも閉めるように
+    } else {
+      setIsExpand(!isExpand)
+      if (!isExpand) setIsLgExpand(true) // md->lg 開けたままサイズ調整しずっと開けてる
+      if (isExpand) setIsLgExpand(false) // md->lg 閉めたままサイズ調整しずっと閉めてる
+    }
   }
 
   const { width } = useCustomWindowSize()
 
-  useEffect(() => {
-    if (width && width > 1024) {
-      setIsExpand(true)
-    }
-  }, [width])
-
   return (
     <div
-      className={`fixed top-0 z-40 h-screen w-56 flex-shrink-0 bg-primary transition-[left] duration-500 ${isExpand ? 'left-0 lg:[&+div]:pl-56' : '-left-56 [&+div]:pl-0'}`}
+      className={`fixed -left-56 top-0 z-40 h-screen w-56 flex-shrink-0 bg-primary transition-[left] duration-500 lg:left-0 lg:[&+div]:pl-56 ${isExpand && 'left-0'} ${!isLgExpand && 'lg:-left-56 lg:[&+div]:pl-0'}`}
     >
       <button
         type="button"
-        className={`absolute top-4 flex h-10 w-10 items-center justify-center overflow-hidden rounded-md border border-solid border-input bg-white shadow-md transition-[right] duration-500 ${isExpand ? 'right-[-1.25rem]' : 'right-[-3.5rem]'}`}
+        className={`absolute right-[-3.5rem] top-4 flex h-10 w-10 items-center justify-center overflow-hidden rounded-md border border-solid border-input bg-white shadow-md transition-[right] duration-500 lg:right-[-1.5rem] ${isExpand && 'right-[-1.5rem]'} ${!isLgExpand && 'lg:!right-[-3.5rem]'}`}
         onClick={toggleExpand}
       >
         <Menu className="shrink-0 text-primary" />
@@ -63,15 +88,11 @@ const Gnb = () => {
         </header>
         <nav className="mt-5">
           <ul className="flex flex-col gap-2">
-            {GnbItems.map((item) => {
+            {menuItems.map((item) => {
               const { href, label, icon } = item
-              let isActive = pathname === href
-
-              if (label === '図書リスト') {
-                if (pathname === '/' || pathname.startsWith('/books')) {
-                  isActive = true
-                }
-              }
+              const isActive =
+                pathname === href ||
+                (label === '図書リスト' && pathname === '/')
 
               return (
                 <li key={href}>

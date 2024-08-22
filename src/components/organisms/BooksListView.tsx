@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Heart } from 'lucide-react'
+import { PATHS } from '@/constants/path'
 
 export interface BooksListViewProps {
   data: BookListInfo
@@ -39,12 +40,15 @@ const BooksListView = ({
           return_at,
           wish_count,
         } = item
-
         return (
           <li key={id} className="w-full p-3">
             <div className="flex size-full flex-wrap rounded-md border">
               <Link
-                href={isAdmin ? `/admin/books/${id}` : `/books/${id}`}
+                href={
+                  isAdmin
+                    ? `${PATHS.ADMIN_BOOKS}/${id}`
+                    : `${PATHS.BOOKS}/${id}`
+                }
                 className="relative block w-2/6 flex-shrink-0 hover:opacity-70 xs:w-[9rem]"
               >
                 <Image
@@ -66,7 +70,11 @@ const BooksListView = ({
               <div className="flex w-4/6 flex-col p-4 xs:w-[calc(100%-9rem)] lg:flex-row">
                 <div className="w-full">
                   <Link
-                    href={isAdmin ? `/admin/books/${id}` : `/books/${id}`}
+                    href={
+                      isAdmin
+                        ? `${PATHS.ADMIN_BOOKS}/${id}`
+                        : `${PATHS.BOOKS}/${id}`
+                    }
                     className={`text-md line-clamp-1 font-normal hover:text-primary hover:underline min-[375px]:line-clamp-2 md:text-lg ${onReturn && 'min-[375px]:line-clamp-1 md:line-clamp-2'}`}
                   >
                     {title}
