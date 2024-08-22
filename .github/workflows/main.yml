@@ -21,7 +21,7 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.HAJIN_GITHUB_KEY }}
         with:
           source-directory: 'output'
-          destination-github-username: hajin
+          destination-github-username: enginhajin
           destination-repository-name: bmb-fe
           user-email: ${{ secrets.HAJIN_ACCOUNT_EMAIL }}
           commit-message: ${{ github.event.commits[0].message }}
