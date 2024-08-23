@@ -61,9 +61,41 @@
   }
 }
 
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/PretendardJP-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/PretendardJP-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: semibold;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/PretendardJP-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: bold;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/PretendardJP-ExtraBold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: extrabold;
+}
+
 @layer base {
   * {
     @apply border-border;
+  }
+  html {
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', 'MS PGothic', sans-serif;
+    letter-spacing: -0.0125rem;
   }
   body {
     @apply bg-background text-foreground;

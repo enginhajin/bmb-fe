@@ -69,7 +69,7 @@ const SearchInput = ({ data, onSearch }: SearchInputProps) => {
           name="category"
           render={({ field }) => (
             <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <SelectTrigger className="w-24 flex-shrink-0 rounded-r-none border-r-0 px-2 focus:ring-0 focus:ring-offset-0">
+              <SelectTrigger className="w-25 flex-shrink-0 rounded-r-none border-r-0 px-2 focus:ring-0 focus:ring-offset-0">
                 <SelectValue placeholder="キーワード" />
               </SelectTrigger>
               <SelectContent>

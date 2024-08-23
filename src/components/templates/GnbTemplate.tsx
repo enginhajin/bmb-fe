@@ -14,7 +14,7 @@ const GnbTemplate = ({ children, title, headerContent }: GnbTemplateProps) => {
       <div className="size-full transition-[padding-left] duration-500">
         <main className="mx-auto max-w-6xl px-6 py-[4.5rem]">
           <header className="md:flex md:items-center md:justify-between">
-            <h1 className="mb-5 text-xl font-bold md:text-2xl">{title}</h1>
+            <h1 className="mb-5 text-xl font-semibold md:text-2xl">{title}</h1>
             {headerContent}
           </header>
           {children}

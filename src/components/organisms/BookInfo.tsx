@@ -52,7 +52,7 @@ const BookInfo = ({
           />
         </div>
         <div className="mt-6 sm:mt-0 sm:w-full sm:pl-6">
-          <h1 className="text-xl font-bold">{title}</h1>
+          <h1 className="text-xl font-semibold">{title}</h1>
           <ul className="mt-6">
             <li className="flex">
               <strong className="w-24 flex-shrink-0">著者</strong>
