@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { BookX } from 'lucide-react'
-import { BookDialogContent } from './BookDialogContent'
+import { DefaultDialogContent } from './DefaultDialogContent'
 
 export interface DeleteDialogContentProps {
   title?: string
@@ -14,7 +14,7 @@ const DeleteDialogContent = ({
   onSubmit,
 }: DeleteDialogContentProps) => {
   return (
-    <BookDialogContent
+    <DefaultDialogContent
       variant="destructive"
       title={title || 'お気に入りから削除しますか？'}
       description={description}

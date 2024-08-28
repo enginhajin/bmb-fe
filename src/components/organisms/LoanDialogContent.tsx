@@ -1,5 +1,5 @@
 import { BookDown } from 'lucide-react'
-import { BookDialogContent } from './BookDialogContent'
+import { DefaultDialogContent } from './DefaultDialogContent'
 
 export interface LoanDialogContentProps {
   onSubmit: () => void
@@ -7,7 +7,7 @@ export interface LoanDialogContentProps {
 
 const LoanDialogContent = ({ onSubmit }: LoanDialogContentProps) => {
   return (
-    <BookDialogContent
+    <DefaultDialogContent
       title="図書を貸出しますか？"
       icon={<BookDown className="size-12 text-primary" />}
       onSubmit={onSubmit}

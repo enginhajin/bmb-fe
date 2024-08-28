@@ -13,11 +13,18 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CircleAlert } from 'lucide-react'
+import { CircleAlert, UserPlus } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { SignUpData } from '@/types/user'
 import { PATHS } from '@/constants/path'
+import { useMutation } from '@tanstack/react-query'
+import { postSignup } from '@/api/auth'
+import { AxiosError } from 'axios'
+import { SIGNUP_ERROR_CODES } from '@/constants/errorCode'
+import { ResponseErrorData } from '@/types/api'
+import { toast } from 'sonner'
+import { useCustomNavigation } from '@/hooks'
 
 const passwordRegex =
   /^(?=.*[A-Za-z])(?=.*\d)|(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/
@@ -80,15 +87,48 @@ export default function SignUpPage() {
     isValid
   )
 
-  function onSubmit() {
-    setError(
-      'user_id',
-      {
-        type: 'dulicate',
-        message: 'すでに使用中のIDです。別のIDを指定してください。',
-      },
-      { shouldFocus: true },
-    )
+  const { navigateToSignIn } = useCustomNavigation()
+
+  const mutation = useMutation({
+    mutationFn: (data: SignUpData) => postSignup(data),
+    onSuccess: () => {
+      toast(
+        <span className="flex items-center gap-2">
+          <UserPlus className="size-4 text-primary" />
+          アカウントの作成を完了しました。ログインしてください。
+        </span>,
+        {
+          duration: 4000,
+        },
+      )
+      navigateToSignIn()
+    },
+    onError: (error: AxiosError) => {
+      if (error.response && error.response.data) {
+        const errorData = error.response.data as ResponseErrorData
+
+        switch (errorData.code) {
+          case SIGNUP_ERROR_CODES.ID_DUPLICATION.code:
+            setError('user_id', {
+              type: 'manual',
+              message: SIGNUP_ERROR_CODES.ID_DUPLICATION.message,
+            })
+            break
+          case SIGNUP_ERROR_CODES.NICKNAME_DUPLICATION.code:
+            setError('nickname', {
+              type: 'manual',
+              message: SIGNUP_ERROR_CODES.NICKNAME_DUPLICATION.message,
+            })
+            break
+          default:
+            alert(`Unhandled error : ${error.message}`)
+        }
+      }
+    },
+  })
+
+  const onSubmit = (data: SignUpData) => {
+    mutation.mutate(data)
   }
 
   return (

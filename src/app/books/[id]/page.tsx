@@ -3,7 +3,7 @@
 import { BookInfo } from '@/components/organisms/BookInfo'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
 import { BookDetailInfo, BookWishInfo } from '@/types/books'
-import { toast, Toaster } from 'sonner'
+import { toast } from 'sonner'
 import { Heart } from 'lucide-react'
 import { Dialog } from '@/components/ui/dialog'
 import { useState } from 'react'
@@ -43,15 +43,15 @@ export default function BookPage() {
 
   const handleToggleWish = (wished: boolean) => {
     toast(
-      <span className="flex gap-2">
+      <span className="flex items-center gap-2">
         {wished ? (
           <>
-            <Heart className="text-red-400" />
+            <Heart className="size-4 text-red-400" />
             お気に入りから削除しました。
           </>
         ) : (
           <>
-            <Heart className="text-red-400" fill="#f87162" />
+            <Heart className="size-4 text-red-400" fill="#f87162" />
             お気に入りに追加しました。
           </>
         )}
@@ -85,7 +85,6 @@ export default function BookPage() {
           }}
         />
       </Dialog>
-      <Toaster position="top-center" />
     </GnbTemplate>
   )
 }

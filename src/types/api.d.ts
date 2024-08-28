@@ -4,3 +4,9 @@ export interface ApiResponse<T> {
   result: T
   token?: string
 }
+
+export interface ResponseErrorData {
+  status: string
+  code: string
+  message: string
+}

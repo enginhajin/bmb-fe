@@ -1,5 +1,5 @@
 import { BookUp } from 'lucide-react'
-import { BookDialogContent } from './BookDialogContent'
+import { DefaultDialogContent } from './DefaultDialogContent'
 
 export interface ReturnDialogContentProps {
   onSubmit: () => void
@@ -7,7 +7,7 @@ export interface ReturnDialogContentProps {
 
 const ReturnDialogContent = ({ onSubmit }: ReturnDialogContentProps) => {
   return (
-    <BookDialogContent
+    <DefaultDialogContent
       title="図書を返却しますか？"
       icon={<BookUp className="size-12 text-primary" />}
       onSubmit={onSubmit}

@@ -8,7 +8,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { ReactNode } from 'react'
 
-export interface BookDialogContentProps {
+export interface DefaultDialogContentProps {
   variant?: 'default' | 'destructive'
   title: string
   description?: string | ReactNode
@@ -16,9 +16,11 @@ export interface BookDialogContentProps {
   onSubmit: () => void
   submitButtonText?: string
   cancelButtonText?: string
+  disabledOutsideClose?: boolean
+  visibleCancleButton?: boolean
 }
 
-const BookDialogContent = ({
+const DefaultDialogContent = ({
   variant = 'default',
   title,
   description,
@@ -26,9 +28,14 @@ const BookDialogContent = ({
   onSubmit,
   submitButtonText = 'はい',
   cancelButtonText = 'いいえ',
-}: BookDialogContentProps) => {
+  disabledOutsideClose = true,
+  visibleCancleButton = true,
+}: DefaultDialogContentProps) => {
   return (
-    <DialogContent className="w-96 max-w-[calc(100%-3rem)] rounded-md">
+    <DialogContent
+      className="w-96 max-w-[calc(100%-3rem)] rounded-md"
+      onInteractOutside={(e) => disabledOutsideClose && e.preventDefault()}
+    >
       <DialogHeader>
         <div className="mx-auto mb-4">{icon}</div>
         <DialogTitle className="text-center">{title}</DialogTitle>
@@ -40,14 +47,16 @@ const BookDialogContent = ({
         <Button variant={variant} type="submit" onClick={onSubmit}>
           {submitButtonText}
         </Button>
-        <DialogClose asChild>
-          <Button type="button" variant="secondary" className="ml-2">
-            {cancelButtonText}
-          </Button>
-        </DialogClose>
+        {visibleCancleButton && (
+          <DialogClose asChild>
+            <Button type="button" variant="secondary" className="ml-2">
+              {cancelButtonText}
+            </Button>
+          </DialogClose>
+        )}
       </div>
     </DialogContent>
   )
 }
 
-export { BookDialogContent }
+export { DefaultDialogContent }

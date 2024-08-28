@@ -11,8 +11,8 @@ interface UserInfoActions {
 }
 
 const defaultState: UserInfo = {
-  user_id: 'user1',
-  nickname: 'ユーザー',
+  user_id: '',
+  nickname: '',
   role: 'USER',
 }
 

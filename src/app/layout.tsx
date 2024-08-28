@@ -1,9 +1,12 @@
 import type { Metadata } from 'next'
 import '@/styles/globals.css'
+import QueryProviders from '@/lib/QueryProvider'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { Toaster } from '@/components/ui/sonner'
 
 export const metadata: Metadata = {
   title: 'bmb',
-  description: 'bmb(bookmybook) project ~ 図書管理システム ~',
+  description: 'bmb-project(図書管理サイト)',
   icons: {
     icon: '/favicon.ico',
   },
@@ -15,8 +18,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+    <QueryProviders>
+      <html lang="en">
+        <body>
+          {children}
+          <ReactQueryDevtools initialIsOpen={false} />
+          <Toaster position="top-center" />
+        </body>
+      </html>
+    </QueryProviders>
   )
 }
