@@ -30,7 +30,7 @@ const BookInfo = ({
     thumbnail,
     author_name,
     publisher_name,
-    publisher_date,
+    published_date,
     status,
   } = bookData
   const { wished, wish_count } = wishData
@@ -64,7 +64,7 @@ const BookInfo = ({
             </li>
             <li className="mt-1 flex">
               <strong className="w-24 flex-shrink-0">発売日</strong>
-              <span>{publisher_date}</span>
+              <span>{published_date}</span>
             </li>
             <li className="mt-1 flex">
               <strong className="w-24 flex-shrink-0">ISBN</strong>
@@ -74,9 +74,9 @@ const BookInfo = ({
               <strong className="w-24 flex-shrink-0">状態</strong>
               <span>
                 <Badge
-                  variant={status === 'AVALIABLE' ? 'default' : 'tertiary'}
+                  variant={status === 'AVAILABLE' ? 'default' : 'tertiary'}
                 >
-                  {status === 'AVALIABLE' ? '保有中' : '貸出中'}
+                  {status === 'AVAILABLE' ? '保有中' : '貸出中'}
                 </Badge>
               </span>
             </li>
@@ -107,20 +107,20 @@ const BookInfo = ({
             )}
             {(onReturn || onLoan) && (
               <Button
-                variant={status === 'CHECKEDOUT' ? 'outline' : 'default'}
-                className={`w-1/2 md:w-40 ${status === 'UNAVALIABLE' && 'bg-tertiary'} ${status === 'CHECKEDOUT' && 'border-2 border-primary text-primary hover:bg-primary hover:text-white'}`}
-                disabled={status === 'UNAVALIABLE'}
+                variant={status === 'CHECKED_OUT' ? 'outline' : 'default'}
+                className={`w-1/2 md:w-40 ${status === 'UNAVAILABLE' && 'bg-tertiary'} ${status === 'CHECKED_OUT' && 'border-2 border-primary text-primary hover:bg-primary hover:text-white'}`}
+                disabled={status === 'UNAVAILABLE'}
                 onClick={() => {
-                  if (status === 'CHECKEDOUT' && onReturn) {
+                  if (status === 'CHECKED_OUT' && onReturn) {
                     onReturn()
                   } else if (onLoan) {
                     onLoan()
                   }
                 }}
               >
-                {status === 'AVALIABLE'
+                {status === 'AVAILABLE'
                   ? '貸出'
-                  : status === 'CHECKEDOUT'
+                  : status === 'CHECKED_OUT'
                     ? '返却'
                     : '貸出不可'}
               </Button>

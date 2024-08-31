@@ -40,6 +40,7 @@ axiosInstance.interceptors.response.use(
       }
 
       const { status } = response
+
       if (!accessToken || status === 401) {
         try {
           const refreshTokenResponse = await axios.post(
@@ -61,7 +62,11 @@ axiosInstance.interceptors.response.use(
             })
           }
         } catch (refreshError) {
-          alert('Tokenの更新に失敗しました。またログインしてください。')
+          if (!accessToken) {
+            alert('会員専用のページです。ログインしてください。')
+          } else {
+            alert('Tokenの更新に失敗しました。またログインしてください。')
+          }
           window.location.href = '/signin'
         }
       } else if (status === 403) {

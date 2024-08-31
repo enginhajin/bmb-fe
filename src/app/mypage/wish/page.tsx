@@ -27,7 +27,7 @@ const mockData: BookListInfo = {
       thumbnail: '/img/book/book_thumbnail.jpg',
       author_name: 'かまど・みくのしん',
       publisher_name: '大和書房',
-      status: 'AVALIABLE',
+      status: 'AVAILABLE',
     },
     {
       id: '201',
@@ -36,7 +36,7 @@ const mockData: BookListInfo = {
       thumbnail: '/img/book/book_thumbnail.jpg',
       author_name: '坂口恭平',
       publisher_name: '大和書房',
-      status: 'UNAVALIABLE',
+      status: 'UNAVAILABLE',
     },
     {
       id: '301',
@@ -46,7 +46,7 @@ const mockData: BookListInfo = {
       thumbnail: '/img/book/book_thumbnail.jpg',
       author_name: 'かまど・みくのしん',
       publisher_name: '大和書房',
-      status: 'AVALIABLE',
+      status: 'AVAILABLE',
     },
     {
       id: '401',
@@ -55,7 +55,7 @@ const mockData: BookListInfo = {
       thumbnail: '/img/book/book_thumbnail.jpg',
       author_name: '坂口恭平',
       publisher_name: '大和書房',
-      status: 'AVALIABLE',
+      status: 'AVAILABLE',
     },
     {
       id: '501',
@@ -65,7 +65,7 @@ const mockData: BookListInfo = {
       thumbnail: '/img/book/book_thumbnail.jpg',
       author_name: 'かまど・みくのしん',
       publisher_name: '大和書房',
-      status: 'AVALIABLE',
+      status: 'AVAILABLE',
     },
     {
       id: '601',
@@ -74,7 +74,7 @@ const mockData: BookListInfo = {
       thumbnail: '/img/book/book_thumbnail.jpg',
       author_name: '坂口恭平',
       publisher_name: '大和書房',
-      status: 'AVALIABLE',
+      status: 'AVAILABLE',
     },
   ],
 }

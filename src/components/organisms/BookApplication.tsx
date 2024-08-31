@@ -58,7 +58,7 @@ const schema = z.object({
     .regex(ISBN_REGEX, '13文字の数字で入力してください。'),
   author_name: z.string().min(1, '必須項目です。'),
   publisher_name: z.string().min(1, '必須項目です。'),
-  publisher_date: z
+  published_date: z
     .string()
     .min(1, '必須項目です。')
     .regex(DATE_REGEX, '数字を入力すると変換されます。')
@@ -82,7 +82,7 @@ const BookApplication = ({ onSubmit }: BookApplicationProps) => {
       isbn: '',
       author_name: '',
       publisher_name: '',
-      publisher_date: '',
+      published_date: '',
       description: '',
     },
   })
@@ -207,7 +207,7 @@ const BookApplication = ({ onSubmit }: BookApplicationProps) => {
             />
             <FormField
               control={control}
-              name="publisher_date"
+              name="published_date"
               render={({ field: { value } }) => (
                 <FormItem className="mt-6 sm:mt-0 sm:w-1/2">
                   <FormLabel>発売日</FormLabel>
@@ -216,7 +216,7 @@ const BookApplication = ({ onSubmit }: BookApplicationProps) => {
                       placeholder="YYYY-MM-DD"
                       onChange={(e) => {
                         const formattedValue = formatToDate(e.target.value)
-                        setValue('publisher_date', formattedValue, {
+                        setValue('published_date', formattedValue, {
                           shouldValidate: true,
                         })
                       }}

@@ -25,8 +25,8 @@ const mockData: BookDetailInfo = {
   thumbnail: '/img/book/book_thumbnail.jpg',
   author_name: 'かまど・みくのしん',
   publisher_name: '大和書房',
-  publisher_date: '2024-09-19',
-  status: 'CHECKEDOUT',
+  published_date: '2024-09-19',
+  status: 'CHECKED_OUT',
   loans: [
     {
       id: '1',

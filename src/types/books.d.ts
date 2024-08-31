@@ -1,4 +1,4 @@
-export type BookStatus = 'AVALIABLE' | 'UNAVALIABLE' | 'CHECKEDOUT'
+export type BookStatus = 'AVAILABLE' | 'UNAVAILABLE' | 'CHECKED_OUT'
 export type SearchCategory = 'ALL' | 'TITLE' | 'AUTHOR' | 'PUBLISHER'
 
 export interface BookInfo {
@@ -20,7 +20,7 @@ export interface BookInfo {
 export interface BookDetailInfo extends BookInfo {
   description: string
   author_name: string
-  publisher_date: string
+  published_date: string
 }
 
 export interface BookWishInfo {
@@ -56,4 +56,9 @@ export interface BookListInfo extends ListPageInfo, BookSearchInfo {
 
 export interface BookApplicationInfo extends BookDetailInfo {
   thumbnail: File
+}
+
+export interface BookListApiParams extends BookSearchInfo {
+  page: number
+  size: number
 }

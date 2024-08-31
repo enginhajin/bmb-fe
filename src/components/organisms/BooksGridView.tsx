@@ -38,18 +38,27 @@ const BooksGridView = ({ data, onLoan, onReturn }: BooksGridViewProps) => {
     <>
       <ul className="-m-3 flex flex-wrap outline-blue-200">
         {data.books.map((item: BookListItem) => {
-          const { id, title, author_name, status, wish_count, wished } = item
+          const {
+            isbn,
+            title,
+            thumbnail,
+            author_name,
+            publisher_name,
+            status,
+            wish_count,
+            wished,
+          } = item
           return (
             <li
-              key={id}
+              key={isbn}
               className="w-6/12 p-3 outline-red-200 sm:w-4/12 md:w-3/12 lg:w-2/12"
             >
               <Link
-                href={`${PATHS.BOOKS}/${id}`}
+                href={`${PATHS.BOOKS}/${isbn}`}
                 className="block w-full hover:opacity-70"
               >
                 <Image
-                  src="/img/book/book_thumbnail.jpg"
+                  src={thumbnail}
                   width={128}
                   height={182}
                   alt="book1"
@@ -58,13 +67,16 @@ const BooksGridView = ({ data, onLoan, onReturn }: BooksGridViewProps) => {
               </Link>
               <div>
                 <Link
-                  href={`${PATHS.BOOKS}/${id}`}
+                  href={`${PATHS.BOOKS}/${isbn}`}
                   className="mt-2 line-clamp-2 h-10 text-sm font-normal hover:text-primary hover:underline"
                 >
                   {title}
                 </Link>
                 <span className="mt-2 line-clamp-1 text-xs text-tertiary">
                   {author_name}
+                </span>
+                <span className="mt-2 line-clamp-1 text-xs text-tertiary">
+                  {publisher_name}
                 </span>
                 <div className="mt-1 flex justify-between">
                   <Button
@@ -85,20 +97,20 @@ const BooksGridView = ({ data, onLoan, onReturn }: BooksGridViewProps) => {
                     <span>{wish_count}</span>
                   </Button>
                   <Button
-                    variant={status === 'CHECKEDOUT' ? 'outline' : 'default'}
-                    className={`mt-1 h-8 w-14 ${status === 'UNAVALIABLE' && 'bg-tertiary'} ${status === 'CHECKEDOUT' && 'border-2 border-primary text-primary hover:bg-primary hover:text-white'}`}
-                    disabled={status === 'UNAVALIABLE'}
+                    variant={status === 'CHECKED_OUT' ? 'outline' : 'default'}
+                    className={`mt-1 h-8 w-14 ${status === 'UNAVAILABLE' && 'bg-tertiary'} ${status === 'CHECKED_OUT' && 'border-2 border-primary text-primary hover:bg-primary hover:text-white'}`}
+                    disabled={status === 'UNAVAILABLE'}
                     onClick={() => {
-                      if (status === 'CHECKEDOUT') {
+                      if (status === 'CHECKED_OUT') {
                         onReturn()
                       } else {
                         onLoan()
                       }
                     }}
                   >
-                    {status === 'AVALIABLE'
+                    {status === 'AVAILABLE'
                       ? '貸出'
-                      : status === 'CHECKEDOUT'
+                      : status === 'CHECKED_OUT'
                         ? '返却'
                         : '不可'}
                   </Button>
