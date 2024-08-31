@@ -16,8 +16,18 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { SignTemplate } from '@/components/templates/SignTemplate'
-import { SignInData } from '@/types/user'
+import { SignInData, UserInfo } from '@/types/user'
 import { PATHS } from '@/constants/path'
+import { AxiosError } from 'axios'
+import { ApiResponse, ResponseErrorData } from '@/types/api'
+import { SIGNIN_ERROR_CODES } from '@/constants/errorCode'
+import { useMutation } from '@tanstack/react-query'
+import { postSignin } from '@/api/auth'
+import { useCustomNavigation } from '@/hooks'
+import { toast } from 'sonner'
+import { UserCheck } from 'lucide-react'
+import { useUserStore } from '@/stores'
+import { setAccessToken } from '@/lib/utils'
 
 const schema = z.object({
   user_id: z.string().min(1, '必須項目です。'),
@@ -50,9 +60,45 @@ export default function SignInPage() {
 
   const isButtonDisabled = !(user_id && password && isDirty && isValid)
 
-  function onSubmit() {
-    setSubmitErrorMessage('IDおよびパスワードをご確認ください。')
-    setFocus('user_id')
+  const { navigateToHome } = useCustomNavigation()
+  const { setUserInfo } = useUserStore()
+
+  const mutation = useMutation({
+    mutationFn: (data: SignInData) => postSignin(data),
+    onSuccess: (data: ApiResponse<UserInfo>) => {
+      setSubmitErrorMessage(null)
+      setUserInfo(data.result)
+      if (data.token) setAccessToken(data.token)
+      toast(
+        <span className="flex items-center gap-2">
+          <UserCheck className="size-4 text-primary" />
+          こんにちは、{`${data.result.nickname}`}さん！bmbへようこそ。
+        </span>,
+        {
+          duration: 4000,
+        },
+      )
+      navigateToHome()
+    },
+    onError: (error: AxiosError) => {
+      if (error.response && error.response.data) {
+        const errorData = error.response.data as ResponseErrorData
+        switch (errorData.code) {
+          case SIGNIN_ERROR_CODES.INVALID_ID_OR_PASSWORD.code:
+            setSubmitErrorMessage(
+              SIGNIN_ERROR_CODES.INVALID_ID_OR_PASSWORD.message,
+            )
+            setFocus('user_id')
+            break
+          default:
+            alert(`Unhandled error : ${error.message}`)
+        }
+      }
+    },
+  })
+
+  const onSubmit = (data: SignInData) => {
+    mutation.mutate(data)
   }
 
   return (

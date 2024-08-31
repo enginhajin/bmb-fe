@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { createJSONStorage, persist } from 'zustand/middleware'
 import { UserInfo } from '@/types/user'
 
 interface UserInfoState {
@@ -16,12 +17,20 @@ const defaultState: UserInfo = {
   role: 'USER',
 }
 
-export const useUserStore = create<UserInfoState & UserInfoActions>((set) => ({
-  userInfo: defaultState,
-  setUserInfo: (data: UserInfo) => {
-    set({ userInfo: data })
-  },
-  deleteUserInfo: () => {
-    set({ userInfo: defaultState })
-  },
-}))
+export const useUserStore = create(
+  persist<UserInfoState & UserInfoActions>(
+    (set) => ({
+      userInfo: defaultState,
+      setUserInfo: (data: UserInfo) => {
+        set({ userInfo: data })
+      },
+      deleteUserInfo: () => {
+        set({ userInfo: defaultState })
+      },
+    }),
+    {
+      name: 'userInfo',
+      storage: createJSONStorage(() => sessionStorage),
+    },
+  ),
+)

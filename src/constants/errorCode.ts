@@ -21,4 +21,11 @@ export const SIGNUP_ERROR_CODES = {
   },
 } as const
 
+export const SIGNIN_ERROR_CODES = {
+  INVALID_ID_OR_PASSWORD: {
+    code: 'INVALID_ID_OR_PASSWORD',
+    message: 'IDおよびパスワードをご確認ください。',
+  },
+} as const
+
 export type Paths = (typeof SIGNUP_ERROR_CODES)[keyof typeof SIGNUP_ERROR_CODES]
