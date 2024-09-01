@@ -3,7 +3,7 @@
 import { BookInfo } from '@/components/organisms/BookInfo'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
 import { Dialog } from '@/components/ui/dialog'
-import { Suspense, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
 import { LoanDialogContent } from '@/components/organisms/LoanDialogContent'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -20,7 +20,7 @@ import {
   usePutLoanMutation,
 } from '@/mutations'
 
-function Page() {
+export default function BookPage() {
   const [currentWishData, setCurrentWishData] = useState<BookWishInfo>({
     wish_count: 0,
     wished: false,
@@ -130,13 +130,5 @@ function Page() {
         </>
       )}
     </GnbTemplate>
-  )
-}
-
-export default function BookPage() {
-  return (
-    <Suspense>
-      <Page />
-    </Suspense>
   )
 }

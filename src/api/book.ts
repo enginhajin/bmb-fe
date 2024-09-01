@@ -1,4 +1,8 @@
-import { BookIsbnInfo, BookListApiParams } from '@/types/books'
+import {
+  BookApplicationInfo,
+  BookIsbnInfo,
+  BookListApiParams,
+} from '@/types/books'
 import axiosInstance from './axios'
 
 export const getBookList = async ({
@@ -63,6 +67,32 @@ export const getLoanList = async ({
 }: BookListApiParams) => {
   const response = await axiosInstance.get('/user/loan', {
     params: { page, size, category, keyword },
+  })
+  return response.data
+}
+
+export const getAdminBookList = async ({
+  page,
+  size,
+  category,
+  keyword,
+}: BookListApiParams) => {
+  const response = await axiosInstance.get('/admin/books', {
+    params: { page, size, category, keyword },
+  })
+  return response.data
+}
+
+export const deleteBook = async (isbn: string) => {
+  const response = await axiosInstance.delete(`/books/${isbn}`)
+  return response.data
+}
+
+export const postBook = async (formData: BookApplicationInfo) => {
+  const response = await axiosInstance.post('/admin/books', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
   })
   return response.data
 }

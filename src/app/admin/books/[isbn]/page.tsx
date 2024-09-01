@@ -6,6 +6,10 @@ import { BookDetailInfo, BookWishInfo } from '@/types/books'
 import { useState } from 'react'
 import { Sheet } from '@/components/ui/sheet'
 import { LoanSheetConent } from '@/components/organisms/LoanSheetContent'
+import { DeleteDialogContent } from '@/components/organisms/DeleteDialogContent'
+import { Dialog } from '@/components/ui/dialog'
+import { useDeleteBookMutation } from '@/mutations'
+import { useParams } from 'next/navigation'
 
 const mockData: BookDetailInfo = {
   id: '201',
@@ -59,6 +63,16 @@ const mockWishData: BookWishInfo = {
 
 export default function BookPage() {
   const [openLoanSheet, setOpenLoanSheet] = useState<boolean>(false)
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false)
+
+  const params = useParams()
+  const isbn = params.isbn as string
+
+  const deleteBookMutation = useDeleteBookMutation({
+    onSuccessUpdateData: () => {
+      // queryClient.invalidateQueries({ queryKey: ['adminbook'] })
+    },
+  })
 
   return (
     <GnbTemplate>
@@ -68,10 +82,29 @@ export default function BookPage() {
         onOpenLoanSheet={() => {
           setOpenLoanSheet(true)
         }}
+        onDelete={() => {
+          setOpenDeleteDialog(true)
+        }}
       />
       <Sheet open={openLoanSheet} onOpenChange={setOpenLoanSheet}>
         <LoanSheetConent data={mockData} />
       </Sheet>
+      <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+        <DeleteDialogContent
+          title="図書を削除しますか？"
+          description={
+            <>
+              図書の情報が全て削除されます。
+              <br />
+              もう一度確認してください。
+            </>
+          }
+          onSubmit={() => {
+            deleteBookMutation.mutate(isbn)
+            setOpenDeleteDialog(false)
+          }}
+        />
+      </Dialog>
     </GnbTemplate>
   )
 }

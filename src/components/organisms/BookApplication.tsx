@@ -16,6 +16,12 @@ import { Textarea } from '@/components/ui/textarea'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { BookApplicationInfo } from '@/types/books'
 import Image from 'next/image'
+import { Dialog } from '@/components/ui/dialog'
+import { ApplicationDialogContent } from '@/components/organisms/ApplicationDialogContent'
+import { useMutation } from '@tanstack/react-query'
+import { postBook } from '@/api/book'
+import { toast } from 'sonner'
+import { BookPlus } from 'lucide-react'
 
 const ACCEPTED_IMAGE_TYPES = [
   'image/jpeg',
@@ -66,12 +72,10 @@ const schema = z.object({
   description: z.string().min(1, '必須項目です。'),
 })
 
-interface BookApplicationProps {
-  onSubmit: (value: BookApplicationInfo) => void
-}
-
-const BookApplication = ({ onSubmit }: BookApplicationProps) => {
+const BookApplication = () => {
   const [imagePreview, setImagePreview] = useState<string>('')
+  const [openApplicationDialog, setOpenApplicationDialog] =
+    useState<boolean>(false)
 
   const form = useForm<BookApplicationInfo>({
     resolver: zodResolver(schema),
@@ -86,7 +90,7 @@ const BookApplication = ({ onSubmit }: BookApplicationProps) => {
       description: '',
     },
   })
-  const { control, handleSubmit, watch, setValue } = form
+  const { control, handleSubmit, watch, setValue, getValues, reset } = form
   const thumbnail = watch('thumbnail')
 
   const formatToDate = (value: string) => {
@@ -95,6 +99,34 @@ const BookApplication = ({ onSubmit }: BookApplicationProps) => {
     const month = cleaned.slice(4, 6)
     const day = cleaned.slice(6, 8)
     return `${year}${month ? `-${month}` : ''}${day ? `-${day}` : ''}`
+  }
+
+  const mutation = useMutation({
+    mutationFn: (data: BookApplicationInfo) => postBook(data),
+    onSuccess: () => {
+      setOpenApplicationDialog(false)
+      toast(
+        <span className="flex items-center gap-2">
+          <BookPlus className="size-4 text-primary" />
+          図書が登録されました。
+        </span>,
+        {
+          duration: 2000,
+        },
+      )
+      reset()
+      if (document.getElementById('thumbnailInput')) {
+        ;(document.getElementById('thumbnailInput') as HTMLInputElement).value =
+          ''
+      }
+    },
+    onError: () => {
+      setOpenApplicationDialog(false)
+    },
+  })
+
+  const onSubmit = () => {
+    mutation.mutate(getValues())
   }
 
   useEffect(() => {
@@ -107,152 +139,167 @@ const BookApplication = ({ onSubmit }: BookApplicationProps) => {
   }, [thumbnail])
 
   return (
-    <div className="mx-auto mt-8 max-w-screen-md">
-      <Form {...form}>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          encType="multipart/form-data"
-          className="space-y-6"
-        >
-          <FormField
-            control={control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>図書名</FormLabel>
-                <FormControl>
-                  <Input placeholder="図書名を入力してください" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="thumbnail"
-            render={() => (
-              <FormItem>
-                <FormLabel>表紙</FormLabel>
-                <div className="flex aspect-[7/10] w-full max-w-36 items-center justify-center overflow-hidden rounded-md border">
-                  {thumbnail && thumbnail.size > 0 ? (
-                    <Image
-                      src={imagePreview as string}
-                      width={144}
-                      height={205}
-                      alt="Uploaded image"
-                      className="h-full"
-                    />
-                  ) : (
-                    <span className="text-tertiary">プレビュー</span>
-                  )}
-                </div>
-                <FormControl>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                      if (e.target.files) {
-                        setValue('thumbnail', e.target.files[0], {
-                          shouldValidate: true,
-                        })
-                      }
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="gap-4 sm:flex">
+    <>
+      <div className="mx-auto mt-8 max-w-screen-md">
+        <Form {...form}>
+          <form
+            onSubmit={handleSubmit(() => setOpenApplicationDialog(true))}
+            encType="multipart/form-data"
+            className="space-y-6"
+          >
             <FormField
               control={control}
-              name="isbn"
+              name="title"
               render={({ field }) => (
-                <FormItem className="sm:w-1/2">
-                  <FormLabel>ISBN</FormLabel>
+                <FormItem>
+                  <FormLabel>図書名</FormLabel>
                   <FormControl>
-                    <Input placeholder="ISBNを入力してください" {...field} />
+                    <Input placeholder="図書名を入力してください" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
-              control={control}
-              name="author_name"
-              render={({ field }) => (
-                <FormItem className="mt-6 sm:mt-0 sm:w-1/2">
-                  <FormLabel>著者名</FormLabel>
-                  <FormControl>
-                    <Input placeholder="著者名を入力してください" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="gap-4 sm:flex">
-            <FormField
-              control={control}
-              name="publisher_name"
-              render={({ field }) => (
-                <FormItem className="sm:w-1/2">
-                  <FormLabel>出版社</FormLabel>
-                  <FormControl>
-                    <Input placeholder="出版社を入力してください" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="published_date"
-              render={({ field: { value } }) => (
-                <FormItem className="mt-6 sm:mt-0 sm:w-1/2">
-                  <FormLabel>発売日</FormLabel>
+              control={form.control}
+              name="thumbnail"
+              render={() => (
+                <FormItem>
+                  <FormLabel>表紙</FormLabel>
+                  <div className="flex aspect-[7/10] w-full max-w-36 items-center justify-center overflow-hidden rounded-md border">
+                    {thumbnail && thumbnail.size > 0 ? (
+                      <Image
+                        src={imagePreview as string}
+                        width={144}
+                        height={205}
+                        alt="Uploaded image"
+                        className="h-full"
+                      />
+                    ) : (
+                      <span className="text-tertiary">プレビュー</span>
+                    )}
+                  </div>
                   <FormControl>
                     <Input
-                      placeholder="YYYY-MM-DD"
-                      onChange={(e) => {
-                        const formattedValue = formatToDate(e.target.value)
-                        setValue('published_date', formattedValue, {
-                          shouldValidate: true,
-                        })
+                      id="thumbnailInput"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        if (e.target.files) {
+                          setValue('thumbnail', e.target.files[0], {
+                            shouldValidate: true,
+                          })
+                        }
                       }}
-                      value={value}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
-          <FormField
-            control={control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>内容紹介</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="内容紹介を入力してください"
-                    className="h-32"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="text-center">
-            <Button type="submit" className="w-full max-w-48">
-              登録する
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+            <div className="gap-4 sm:flex">
+              <FormField
+                control={control}
+                name="isbn"
+                render={({ field }) => (
+                  <FormItem className="sm:w-1/2">
+                    <FormLabel>ISBN</FormLabel>
+                    <FormControl>
+                      <Input placeholder="ISBNを入力してください" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="author_name"
+                render={({ field }) => (
+                  <FormItem className="mt-6 sm:mt-0 sm:w-1/2">
+                    <FormLabel>著者名</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="著者名を入力してください"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="gap-4 sm:flex">
+              <FormField
+                control={control}
+                name="publisher_name"
+                render={({ field }) => (
+                  <FormItem className="sm:w-1/2">
+                    <FormLabel>出版社</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="出版社を入力してください"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="published_date"
+                render={({ field: { value } }) => (
+                  <FormItem className="mt-6 sm:mt-0 sm:w-1/2">
+                    <FormLabel>発売日</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="YYYY-MM-DD"
+                        onChange={(e) => {
+                          const formattedValue = formatToDate(e.target.value)
+                          setValue('published_date', formattedValue, {
+                            shouldValidate: true,
+                          })
+                        }}
+                        value={value}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormField
+              control={control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>内容紹介</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="内容紹介を入力してください"
+                      className="h-32"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="text-center">
+              <Button type="submit" className="w-full max-w-48">
+                登録する
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
+      <Dialog
+        open={openApplicationDialog}
+        onOpenChange={setOpenApplicationDialog}
+      >
+        <ApplicationDialogContent onSubmit={onSubmit} />
+      </Dialog>
+    </>
   )
 }
 

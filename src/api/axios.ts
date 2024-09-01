@@ -74,7 +74,6 @@ axiosInstance.interceptors.response.use(
         window.location.href = '/signin'
       } else if (status >= 500) {
         alert('サーバーエラーが発生しました。管理者にお問い合わせください。')
-        window.location.href = '/signin'
       }
     }
 

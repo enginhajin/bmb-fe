@@ -12,6 +12,7 @@ export interface BookInfoProps {
   onLoan?: () => void
   onReturn?: () => void
   onOpenLoanSheet?: () => void
+  onDelete?: (isbn: string) => void
 }
 
 const BookInfo = ({
@@ -21,6 +22,7 @@ const BookInfo = ({
   onLoan,
   onReturn,
   onOpenLoanSheet,
+  onDelete,
 }: BookInfoProps) => {
   const router = useRouter()
   const {
@@ -100,7 +102,7 @@ const BookInfo = ({
                 <span>{wish_count}</span>
               </Button>
             ) : (
-              <div className="flex items-center pl-4 pr-6 text-red-400">
+              <div className="flex items-center pl-2 pr-4 text-red-400 sm:pl-4 sm:pr-6">
                 <Heart />
                 <span className="ml-1">{wish_count}</span>
               </div>
@@ -129,12 +131,22 @@ const BookInfo = ({
               <Button
                 variant="secondary"
                 size="sm"
-                className="w-1/2 max-w-28 lg:w-full"
+                className="w-1/2 max-w-28"
                 onClick={() => {
                   onOpenLoanSheet()
                 }}
               >
                 貸出状況
+              </Button>
+            )}
+            {onDelete && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-1/2 max-w-28 border-2 border-destructive text-destructive hover:bg-destructive hover:text-white"
+                onClick={() => onDelete(isbn)}
+              >
+                削除
               </Button>
             )}
           </div>

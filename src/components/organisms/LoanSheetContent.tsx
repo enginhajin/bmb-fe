@@ -45,7 +45,7 @@ const LoanSheetConent = ({ data }: LoanSheetConentProps) => {
                   </div>
                   <div className="mt-2 flex w-1/2 flex-col pl-1">
                     <strong className="text-sm text-tertiary">返却日</strong>
-                    <span>{return_at}</span>
+                    <span>{return_at || '-'}</span>
                   </div>
                 </li>
               )
