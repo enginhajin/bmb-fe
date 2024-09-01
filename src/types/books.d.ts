@@ -48,6 +48,10 @@ export interface BookSearchInfo {
   keyword: string
 }
 
+export interface BookIsbnInfo {
+  book_isbn: string
+}
+
 export interface BookListItem extends BookInfo, BookWishInfo {}
 
 export interface BookListInfo extends ListPageInfo, BookSearchInfo {

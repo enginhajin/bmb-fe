@@ -6,14 +6,19 @@ import { Dialog } from '@/components/ui/dialog'
 import { Suspense, useEffect, useState } from 'react'
 import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
 import { LoanDialogContent } from '@/components/organisms/LoanDialogContent'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getBook, getWish } from '@/api/book'
 import { useParams } from 'next/navigation'
 import { AxiosError } from 'axios'
 import { useCustomNavigation } from '@/hooks'
 import { useUserStore } from '@/stores'
 import { BookWishInfo } from '@/types/books'
-import { useDeleteWishMutation, usePostWishMutation } from '@/mutations'
+import {
+  useDeleteWishMutation,
+  usePostLoanMutation,
+  usePostWishMutation,
+  usePutLoanMutation,
+} from '@/mutations'
 
 function Page() {
   const [currentWishData, setCurrentWishData] = useState<BookWishInfo>({
@@ -23,6 +28,7 @@ function Page() {
   const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false)
   const [openLoanDialog, setOpenLoanDialog] = useState<boolean>(false)
 
+  const queryClient = useQueryClient()
   const { navigateToAdminBooks, navigateToHome } = useCustomNavigation()
   const { userInfo } = useUserStore()
   const { role } = userInfo
@@ -52,6 +58,16 @@ function Page() {
   const deleteWishMutation = useDeleteWishMutation({
     onSuccessUpdateWish: (wishInfo) => {
       setCurrentWishData(wishInfo)
+    },
+  })
+  const postLoanMutation = usePostLoanMutation({
+    onSuccessUpdateData: () => {
+      queryClient.invalidateQueries({ queryKey: ['book'] })
+    },
+  })
+  const putLoanMutation = usePutLoanMutation({
+    onSuccessUpdateData: () => {
+      queryClient.invalidateQueries({ queryKey: ['book'] })
     },
   })
 
@@ -98,6 +114,7 @@ function Page() {
           <Dialog open={openReturnDialog} onOpenChange={setOpenReturnDialog}>
             <ReturnDialogContent
               onSubmit={() => {
+                putLoanMutation.mutate(isbn)
                 setOpenReturnDialog(false)
               }}
             />
@@ -105,6 +122,7 @@ function Page() {
           <Dialog open={openLoanDialog} onOpenChange={setOpenLoanDialog}>
             <LoanDialogContent
               onSubmit={() => {
+                postLoanMutation.mutate(isbn)
                 setOpenLoanDialog(false)
               }}
             />

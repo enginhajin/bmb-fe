@@ -11,12 +11,18 @@ import { DeleteDialogContent } from '@/components/organisms/DeleteDialogContent'
 import { LoanDialogContent } from '@/components/organisms/LoanDialogContent'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getWishList } from '@/api/book'
-import { useDeleteWishMutation } from '@/mutations'
+import {
+  useDeleteWishMutation,
+  usePostLoanMutation,
+  usePutLoanMutation,
+} from '@/mutations'
+import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
 
 function Page() {
   const { currentPage, handlePageChange } = useCustomPagination(0)
   const { currentSearchData, handleSearch } = useCustomSearchBooks()
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false)
+  const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false)
   const [openLoanDialog, setOpenLoanDialog] = useState<boolean>(false)
   const [currentBookIsbn, setCurrentBookIsbn] = useState<string>('')
 
@@ -39,6 +45,16 @@ function Page() {
       queryClient.invalidateQueries({ queryKey: ['wishlist'] })
     },
   })
+  const postLoanMutation = usePostLoanMutation({
+    onSuccessUpdateData: () => {
+      queryClient.invalidateQueries({ queryKey: ['wishlist'] })
+    },
+  })
+  const putLoanMutation = usePutLoanMutation({
+    onSuccessUpdateData: () => {
+      queryClient.invalidateQueries({ queryKey: ['wishlist'] })
+    },
+  })
 
   return (
     <GnbTemplate
@@ -55,7 +71,14 @@ function Page() {
               setCurrentBookIsbn(isbn)
               setOpenDeleteDialog(true)
             }}
-            onLoan={() => setOpenLoanDialog(true)}
+            onLoan={(isbn: string) => {
+              setCurrentBookIsbn(isbn)
+              setOpenLoanDialog(true)
+            }}
+            onReturn={(isbn: string) => {
+              setCurrentBookIsbn(isbn)
+              setOpenReturnDialog(true)
+            }}
           />
           <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
             <DeleteDialogContent
@@ -65,9 +88,18 @@ function Page() {
               }}
             />
           </Dialog>
+          <Dialog open={openReturnDialog} onOpenChange={setOpenReturnDialog}>
+            <ReturnDialogContent
+              onSubmit={() => {
+                putLoanMutation.mutate(currentBookIsbn)
+                setOpenReturnDialog(false)
+              }}
+            />
+          </Dialog>
           <Dialog open={openLoanDialog} onOpenChange={setOpenLoanDialog}>
             <LoanDialogContent
               onSubmit={() => {
+                postLoanMutation.mutate(currentBookIsbn)
                 setOpenLoanDialog(false)
               }}
             />

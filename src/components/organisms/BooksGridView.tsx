@@ -7,8 +7,8 @@ import { PATHS } from '@/constants/path'
 
 export interface BooksGridViewProps {
   data: BookListInfo
-  onLoan: () => void
-  onReturn: () => void
+  onLoan: (isbn: string) => void
+  onReturn: (isbn: string) => void
   handleToggleWish: (wished: boolean, isbn: string) => void
 }
 
@@ -85,9 +85,9 @@ const BooksGridView = ({
                   disabled={status === 'UNAVAILABLE'}
                   onClick={() => {
                     if (status === 'CHECKED_OUT') {
-                      onReturn()
+                      onReturn(isbn)
                     } else {
-                      onLoan()
+                      onLoan(isbn)
                     }
                   }}
                 >

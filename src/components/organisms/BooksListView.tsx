@@ -9,8 +9,8 @@ import { PATHS } from '@/constants/path'
 export interface BooksListViewProps {
   data: BookListInfo
   onDelete?: (isbn: string) => void
-  onLoan?: () => void
-  onReturn?: () => void
+  onLoan?: (isbn: string) => void
+  onReturn?: (isbn: string) => void
   onOpenLoanSheet?: (isbn: string) => void
   isVisibleBadge?: boolean
   isAdmin?: boolean
@@ -155,10 +155,10 @@ const BooksListView = ({
                       disabled={status === 'UNAVAILABLE'}
                       onClick={() => {
                         if (status === 'CHECKED_OUT' && onReturn) {
-                          onReturn()
+                          onReturn(isbn)
                         }
                         if (status === 'AVAILABLE' && onLoan) {
-                          onLoan()
+                          onLoan(isbn)
                         }
                       }}
                     >
