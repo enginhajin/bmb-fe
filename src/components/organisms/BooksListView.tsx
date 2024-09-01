@@ -8,7 +8,7 @@ import { PATHS } from '@/constants/path'
 
 export interface BooksListViewProps {
   data: BookListInfo
-  onDelete?: () => void
+  onDelete?: (isbn: string) => void
   onLoan?: () => void
   onReturn?: () => void
   onOpenLoanSheet?: (isbn: string) => void
@@ -29,7 +29,6 @@ const BooksListView = ({
     <ul className="-m-3 flex flex-wrap">
       {data.books.map((item) => {
         const {
-          id,
           isbn,
           title,
           thumbnail,
@@ -41,13 +40,13 @@ const BooksListView = ({
           wish_count,
         } = item
         return (
-          <li key={id} className="w-full p-3">
+          <li key={isbn} className="w-full p-3">
             <div className="flex size-full flex-wrap rounded-md border">
               <Link
                 href={
                   isAdmin
-                    ? `${PATHS.ADMIN_BOOKS}/${id}`
-                    : `${PATHS.BOOKS}/${id}`
+                    ? `${PATHS.ADMIN_BOOKS}/${isbn}`
+                    : `${PATHS.BOOKS}/${isbn}`
                 }
                 className="relative block w-2/6 flex-shrink-0 hover:opacity-70 xs:w-[9rem]"
               >
@@ -72,8 +71,8 @@ const BooksListView = ({
                   <Link
                     href={
                       isAdmin
-                        ? `${PATHS.ADMIN_BOOKS}/${id}`
-                        : `${PATHS.BOOKS}/${id}`
+                        ? `${PATHS.ADMIN_BOOKS}/${isbn}`
+                        : `${PATHS.BOOKS}/${isbn}`
                     }
                     className={`text-md line-clamp-1 font-normal hover:text-primary hover:underline min-[375px]:line-clamp-2 md:text-lg ${onReturn && 'min-[375px]:line-clamp-1 md:line-clamp-2'}`}
                   >
@@ -187,7 +186,7 @@ const BooksListView = ({
                       variant="outline"
                       size="sm"
                       className="ml-2 w-1/2 max-w-28 border-2 border-destructive text-destructive hover:bg-destructive hover:text-white lg:ml-0 lg:mt-2 lg:w-full"
-                      onClick={onDelete}
+                      onClick={() => onDelete(isbn)}
                     >
                       削除
                     </Button>

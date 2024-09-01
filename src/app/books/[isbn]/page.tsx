@@ -2,26 +2,24 @@
 
 import { BookInfo } from '@/components/organisms/BookInfo'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
-import { BookWishInfo } from '@/types/books'
-import { toast } from 'sonner'
-import { Heart } from 'lucide-react'
 import { Dialog } from '@/components/ui/dialog'
 import { Suspense, useEffect, useState } from 'react'
 import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
 import { LoanDialogContent } from '@/components/organisms/LoanDialogContent'
 import { useQuery } from '@tanstack/react-query'
-import { getBook } from '@/api/book'
+import { getBook, getWish } from '@/api/book'
 import { useParams } from 'next/navigation'
 import { AxiosError } from 'axios'
 import { useCustomNavigation } from '@/hooks'
 import { useUserStore } from '@/stores'
-
-const mockWishData: BookWishInfo = {
-  wished: false,
-  wish_count: 5,
-}
+import { BookWishInfo } from '@/types/books'
+import { useDeleteWishMutation, usePostWishMutation } from '@/mutations'
 
 function Page() {
+  const [currentWishData, setCurrentWishData] = useState<BookWishInfo>({
+    wish_count: 0,
+    wished: false,
+  })
   const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false)
   const [openLoanDialog, setOpenLoanDialog] = useState<boolean>(false)
 
@@ -36,6 +34,25 @@ function Page() {
     queryKey: ['book', isbn],
     queryFn: () => getBook(isbn),
     retry: 0,
+    staleTime: 0,
+  })
+
+  const { data: wishData } = useQuery({
+    queryKey: ['wish', isbn],
+    queryFn: () => getWish(isbn),
+    retry: 0,
+    staleTime: 0,
+  })
+
+  const postWishMutation = usePostWishMutation({
+    onSuccessUpdateWish: (wishInfo) => {
+      setCurrentWishData(wishInfo)
+    },
+  })
+  const deleteWishMutation = useDeleteWishMutation({
+    onSuccessUpdateWish: (wishInfo) => {
+      setCurrentWishData(wishInfo)
+    },
   })
 
   useEffect(() => {
@@ -54,33 +71,26 @@ function Page() {
   }, [error])
 
   const handleToggleWish = (wished: boolean) => {
-    toast(
-      <span className="flex items-center gap-2">
-        {wished ? (
-          <>
-            <Heart className="size-4 text-red-400" />
-            お気に入りから削除しました。
-          </>
-        ) : (
-          <>
-            <Heart className="size-4 text-red-400" fill="#f87162" />
-            お気に入りに追加しました。
-          </>
-        )}
-      </span>,
-      {
-        duration: 2000,
-      },
-    )
+    if (wished) {
+      deleteWishMutation.mutate(isbn)
+    } else {
+      postWishMutation.mutate(isbn)
+    }
   }
+
+  useEffect(() => {
+    if (wishData) {
+      setCurrentWishData(wishData.result)
+    }
+  }, [wishData])
 
   return (
     <GnbTemplate>
-      {data && (
+      {data && wishData && (
         <>
           <BookInfo
             bookData={data.result}
-            wishData={mockWishData}
+            wishData={currentWishData}
             onToggleWish={handleToggleWish}
             onLoan={() => setOpenLoanDialog(true)}
             onReturn={() => setOpenReturnDialog(true)}

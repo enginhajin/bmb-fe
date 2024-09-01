@@ -43,6 +43,7 @@ const Gnb = () => {
   const { userInfo } = useUserStore()
   const { role } = userInfo
   const { isExpand, isLgExpand, setIsExpand, setIsLgExpand } = useGnbStore()
+  const { width } = useCustomWindowSize()
 
   const menuItems = useMemo(() => {
     return role === 'ADMIN' ? adminGnbItems : gnbItems
@@ -58,8 +59,6 @@ const Gnb = () => {
       if (isExpand) setIsLgExpand(false) // md->lg 閉めたままサイズ調整しずっと閉めてる
     }
   }
-
-  const { width } = useCustomWindowSize()
 
   return (
     <div
@@ -101,6 +100,11 @@ const Gnb = () => {
                     className={`-mx-2 flex items-center rounded-md p-2 hover:text-white ${
                       isActive ? 'bg-[#0f9f71] text-white' : 'text-white/80'
                     }`}
+                    onClick={() => {
+                      if (width && width <= 1024) {
+                        setIsExpand(false)
+                      }
+                    }}
                   >
                     <span className="mr-2 [&>svg]:w-4">{icon}</span>
                     {label}

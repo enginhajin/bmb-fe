@@ -9,7 +9,8 @@ import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
 import { Dialog } from '@/components/ui/dialog'
 import { useCustomPagination, useCustomSearchBooks } from '@/hooks'
-import { useQuery } from '@tanstack/react-query'
+import { useDeleteWishMutation, usePostWishMutation } from '@/mutations'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Suspense, useState } from 'react'
 
 function Page() {
@@ -17,6 +18,8 @@ function Page() {
   const { currentSearchData, handleSearch } = useCustomSearchBooks()
   const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false)
   const [openLoanDialog, setOpenLoanDialog] = useState<boolean>(false)
+
+  const queryClient = useQueryClient()
 
   const { data } = useQuery({
     queryKey: ['books', currentPage, currentSearchData],
@@ -27,7 +30,27 @@ function Page() {
         category: currentSearchData.category,
         keyword: currentSearchData.keyword,
       }),
+    staleTime: 0,
   })
+
+  const postWishMutation = usePostWishMutation({
+    onSuccessUpdateBooks: () => {
+      queryClient.invalidateQueries({ queryKey: ['books'] })
+    },
+  })
+  const deleteWishMutation = useDeleteWishMutation({
+    onSuccessUpdateBooks: () => {
+      queryClient.invalidateQueries({ queryKey: ['books'] })
+    },
+  })
+
+  const handleToggleWish = (wished: boolean, isbn: string) => {
+    if (wished) {
+      deleteWishMutation.mutate(isbn)
+    } else {
+      postWishMutation.mutate(isbn)
+    }
+  }
 
   return (
     <GnbTemplate
@@ -42,6 +65,7 @@ function Page() {
             data={data.result}
             onLoan={() => setOpenLoanDialog(true)}
             onReturn={() => setOpenReturnDialog(true)}
+            handleToggleWish={handleToggleWish}
           />
           <Dialog open={openReturnDialog} onOpenChange={setOpenReturnDialog}>
             <ReturnDialogContent
