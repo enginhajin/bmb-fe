@@ -2,6 +2,7 @@
 
 import { PATHS } from '@/constants/path'
 import { useCustomWindowSize } from '@/hooks'
+import { usePostSignOutMutation } from '@/mutations'
 import { useGnbStore, useUserStore } from '@/stores'
 import { Book, Bookmark, Heart, Menu, SquarePlus } from 'lucide-react'
 import Image from 'next/image'
@@ -60,6 +61,8 @@ const Gnb = () => {
     }
   }
 
+  const postSignOutMutation = usePostSignOutMutation()
+
   return (
     <div
       className={`fixed -left-56 top-0 z-40 h-screen w-56 flex-shrink-0 bg-primary transition-[left] duration-500 lg:left-0 lg:[&+div]:pl-56 ${isExpand && 'left-0'} ${!isLgExpand && 'lg:!-left-56 lg:[&+div]:!pl-0'}`}
@@ -117,6 +120,9 @@ const Gnb = () => {
             <button
               type="button"
               className="text-sm text-white hover:underline"
+              onClick={() => {
+                postSignOutMutation.mutate()
+              }}
             >
               サインアウト
             </button>

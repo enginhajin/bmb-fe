@@ -26,6 +26,7 @@ export const useUserStore = create(
       },
       deleteUserInfo: () => {
         set({ userInfo: defaultState })
+        sessionStorage.removeItem('userInfo')
       },
     }),
     {
