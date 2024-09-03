@@ -11,7 +11,6 @@ import { getBook, getWish } from '@/api/book'
 import { useParams } from 'next/navigation'
 import { AxiosError } from 'axios'
 import { useCustomNavigation } from '@/hooks'
-import { useUserStore } from '@/stores'
 import { BookWishInfo } from '@/types/books'
 import {
   useDeleteWishMutation,
@@ -29,9 +28,7 @@ export default function BookPage() {
   const [openLoanDialog, setOpenLoanDialog] = useState<boolean>(false)
 
   const queryClient = useQueryClient()
-  const { navigateToAdminBooks, navigateToHome } = useCustomNavigation()
-  const { userInfo } = useUserStore()
-  const { role } = userInfo
+  const { navigateToHome } = useCustomNavigation()
 
   const params = useParams()
   const isbn = params.isbn as string
@@ -76,11 +73,7 @@ export default function BookPage() {
       if (error instanceof AxiosError && error.response?.status === 404) {
         // 나중에 수정 필요 (ErrorCode 정리 후)
         alert('該当する図書がありません。ホームに移動します。')
-        if (role === 'USER') {
-          navigateToHome()
-        } else {
-          navigateToAdminBooks()
-        }
+        navigateToHome()
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
