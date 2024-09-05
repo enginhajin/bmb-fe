@@ -14,7 +14,7 @@ interface UserInfoActions {
 const defaultState: UserInfo = {
   user_id: '',
   nickname: '',
-  role: 'USER',
+  role: '',
 }
 
 export const useUserStore = create(
@@ -26,12 +26,12 @@ export const useUserStore = create(
       },
       deleteUserInfo: () => {
         set({ userInfo: defaultState })
-        sessionStorage.removeItem('userInfo')
+        localStorage.removeItem('userInfo')
       },
     }),
     {
       name: 'userInfo',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
     },
   ),
 )

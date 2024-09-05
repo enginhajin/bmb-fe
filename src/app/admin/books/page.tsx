@@ -1,29 +1,50 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { SearchInput } from '@/components/molecules/SearchInput'
 import { BooksListView } from '@/components/organisms/BooksListView'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
-import { BookInfo } from '@/types/books'
-import { useCustomPagination, useCustomSearchBooks } from '@/hooks'
+import { BookInfo, BookListInfo } from '@/types/books'
+import {
+  useCustomCheckRoleDialog,
+  useCustomPagination,
+  useCustomSearchBooks,
+} from '@/hooks'
 import { Pagination } from '@/components/molecules/Pagination'
 import { Dialog } from '@/components/ui/dialog'
 import { DeleteDialogContent } from '@/components/organisms/DeleteDialogContent'
 import { Sheet } from '@/components/ui/sheet'
 import { LoanSheetConent } from '@/components/organisms/LoanSheetContent'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient, UseQueryResult } from '@tanstack/react-query'
 import { getAdminBookList } from '@/api/book'
 import { useDeleteBookMutation } from '@/mutations'
+import { ApiResponse } from '@/types/api'
+import { AxiosError } from 'axios'
+import { handleBookListError } from '@/lib/utils'
+import { AuthDialogContent } from '@/components/organisms/AuthDialogContent'
 
 function Page() {
-  const { currentPage, handlePageChange } = useCustomPagination(0)
-  const { currentSearchData, handleSearch } = useCustomSearchBooks()
+  const {
+    isAdmin,
+    dialogOpen,
+    dialogTitle,
+    setDialogOpen,
+    handleDialogSubmit,
+  } = useCustomCheckRoleDialog({ requiredRole: 'ADMIN' })
+  const { currentPage, handlePageChange, setTotalPage } = useCustomPagination()
+  const { currentSearchData, handleSearch } = useCustomSearchBooks({
+    handlePageChange,
+  })
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false)
   const [openLoanSheet, setOpenLoanSheet] = useState<boolean>(false)
   const [currentBookData, setCurrentBookData] = useState<BookInfo>()
+  const [currentBookIsbn, setCurrentBookIsbn] = useState<string>('')
   const queryClient = useQueryClient()
 
-  const { data } = useQuery({
+  const {
+    data,
+    error,
+  }: UseQueryResult<ApiResponse<BookListInfo>, AxiosError> = useQuery({
     queryKey: ['adminbooks', currentPage, currentSearchData],
     queryFn: () =>
       getAdminBookList({
@@ -33,10 +54,12 @@ function Page() {
         keyword: currentSearchData.keyword,
       }),
     staleTime: 0,
+    retry: 0,
+    enabled: !!isAdmin,
   })
 
   const handleLoanSheetOpen = (isbn: string) => {
-    const book = data.result.books.find((item: BookInfo) => item.isbn === isbn)
+    const book = data?.result.books.find((item: BookInfo) => item.isbn === isbn)
     setCurrentBookData(book)
     setOpenLoanSheet(true)
   }
@@ -46,6 +69,16 @@ function Page() {
       queryClient.invalidateQueries({ queryKey: ['adminbooks'] })
     },
   })
+
+  useEffect(() => {
+    if (data) setTotalPage(data.result.total_pages)
+  }, [data, setTotalPage])
+
+  useEffect(() => {
+    if (error && error.response) {
+      handleBookListError(error.response, handlePageChange)
+    }
+  }, [error, handlePageChange])
 
   return (
     <GnbTemplate
@@ -58,7 +91,8 @@ function Page() {
         <>
           <BooksListView
             data={data.result}
-            onDelete={() => {
+            onDelete={(isbn: string) => {
+              setCurrentBookIsbn(isbn)
               setOpenDeleteDialog(true)
             }}
             onOpenLoanSheet={(isbn: string) => {
@@ -67,6 +101,13 @@ function Page() {
             isVisibleBadge
             isAdmin
           />
+          {data.result.books.length > 0 && (
+            <Pagination
+              total_pages={data.result.total_pages}
+              current_page={currentPage}
+              onPageChange={handlePageChange}
+            />
+          )}
           <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
             <DeleteDialogContent
               title="図書を削除しますか？"
@@ -78,8 +119,8 @@ function Page() {
                 </>
               }
               onSubmit={() => {
-                if (currentBookData) {
-                  deleteBookMutation.mutate(currentBookData.isbn)
+                if (currentBookIsbn) {
+                  deleteBookMutation.mutate(currentBookIsbn)
                   setOpenDeleteDialog(false)
                 }
               }}
@@ -88,13 +129,11 @@ function Page() {
           <Sheet open={openLoanSheet} onOpenChange={setOpenLoanSheet}>
             {currentBookData && <LoanSheetConent data={currentBookData} />}
           </Sheet>
-          <Pagination
-            total_pages={data.result.total_pages}
-            current_page={currentPage}
-            onPageChange={handlePageChange}
-          />
         </>
       )}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <AuthDialogContent title={dialogTitle} onSubmit={handleDialogSubmit} />
+      </Dialog>
     </GnbTemplate>
   )
 }

@@ -122,6 +122,7 @@ const Gnb = () => {
               className="text-sm text-white hover:underline"
               onClick={() => {
                 postSignOutMutation.mutate()
+                setIsExpand(false)
               }}
             >
               サインアウト

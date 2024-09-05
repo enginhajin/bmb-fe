@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import useCustomSearchParams from './useCustomSearchParams'
 
-const useCustomPagination = (total_pages: number) => {
+const useCustomPagination = () => {
   const { searchParams, setSearchParams } = useCustomSearchParams()
+  const [totalPage, setTotalPage] = useState<number>(1)
   const [currentPage, setCurrentPage] = useState<number>(
     Number(searchParams.page) || 1,
   )
@@ -12,11 +13,15 @@ const useCustomPagination = (total_pages: number) => {
   }
 
   useEffect(() => {
+    const page = Number(searchParams.page) || 1
+    setCurrentPage(page)
+  }, [searchParams.page])
+
+  useEffect(() => {
+    const validPage = Math.max(1, Math.min(currentPage, totalPage))
     setSearchParams({
       ...searchParams,
-      page: String(
-        currentPage < 1 || currentPage > total_pages ? 1 : currentPage,
-      ),
+      page: String(validPage),
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage])
@@ -24,6 +29,7 @@ const useCustomPagination = (total_pages: number) => {
   return {
     currentPage,
     handlePageChange,
+    setTotalPage,
   }
 }
 

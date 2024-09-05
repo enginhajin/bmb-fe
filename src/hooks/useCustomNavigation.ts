@@ -31,6 +31,9 @@ const useCustomNavigation = () => {
   const navigateToBookApplication = () => {
     router.push(PATHS.ADMIN_APPLICATION)
   }
+  const navigateToBack = () => {
+    router.back()
+  }
 
   return {
     navigateToHome,
@@ -42,6 +45,7 @@ const useCustomNavigation = () => {
     navigateToAdminBooks,
     navigateToAdminBookDetail,
     navigateToBookApplication,
+    navigateToBack,
   }
 }
 

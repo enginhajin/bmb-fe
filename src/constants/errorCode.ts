@@ -28,4 +28,25 @@ export const SIGNIN_ERROR_CODES = {
   },
 } as const
 
-export type Paths = (typeof SIGNUP_ERROR_CODES)[keyof typeof SIGNUP_ERROR_CODES]
+export const BOOK_APPLICATION_ERROR_CODES = {
+  INVALID_ISBN: {
+    code: 'INVALID_ISBN',
+    message: 'ISBNを確認してください。',
+  },
+  INVALID_FILE_FORMAT: {
+    code: 'INVALID_FILE_FORMAT',
+    message: 'jpeg、jpg、png形式のみアップロード可能です。',
+  },
+  INVALID_PUBLISHED_DATE: {
+    code: 'INVALID_PUBLISHED_DATE',
+    message: '日付を確認してください。',
+  },
+  INVALID_DESCRIPTION: {
+    code: 'INVALID_DESCRIPTION',
+    message: '1000文字以内で入力してください。',
+  },
+  BOOK_ALREADY_INSERT: {
+    code: 'BOOK_ALREADY_INSERT',
+    message: 'このISBNは登録済みのISBNです。',
+  },
+} as const

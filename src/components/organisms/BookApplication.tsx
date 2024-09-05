@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-
+import { isBefore, isToday, startOfDay } from 'date-fns'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -22,13 +22,11 @@ import { useMutation } from '@tanstack/react-query'
 import { postBook } from '@/api/book'
 import { toast } from 'sonner'
 import { BookPlus } from 'lucide-react'
+import { AxiosError } from 'axios'
+import { ResponseErrorData } from '@/types/api'
+import { BOOK_APPLICATION_ERROR_CODES } from '@/constants/errorCode'
 
-const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/webp',
-]
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png']
 const MAX_FILE_SIZE = 0.5 * 1024 * 1024 // 500KB
 const ISBN_REGEX = /^\d{13}$/
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/
@@ -43,6 +41,12 @@ const checkValidDate = (dateString: string): boolean => {
     date.getMonth() === month - 1 &&
     date.getDate() === day
   )
+}
+
+const checkValidDateToday = (date: string): boolean => {
+  const today = startOfDay(new Date())
+  const inputDate = startOfDay(date)
+  return isToday(inputDate) || isBefore(inputDate, today)
 }
 
 const schema = z.object({
@@ -68,8 +72,12 @@ const schema = z.object({
     .string()
     .min(1, '必須項目です。')
     .regex(DATE_REGEX, '数字を入力すると変換されます。')
-    .refine(checkValidDate, '日付を確認してください。'),
-  description: z.string().min(1, '必須項目です。'),
+    .refine(checkValidDate, '日付を確認してください。')
+    .refine(checkValidDateToday, '本日以降の日付は入力できません。'),
+  description: z
+    .string()
+    .min(1, '必須項目です。')
+    .max(1000, '1000文字以内で入力してください。'),
 })
 
 const BookApplication = () => {
@@ -90,7 +98,16 @@ const BookApplication = () => {
       description: '',
     },
   })
-  const { control, handleSubmit, watch, setValue, getValues, reset } = form
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    getValues,
+    reset,
+    setError,
+    setFocus,
+  } = form
   const thumbnail = watch('thumbnail')
 
   const formatToDate = (value: string) => {
@@ -120,8 +137,53 @@ const BookApplication = () => {
           ''
       }
     },
-    onError: () => {
+    onError: (error: AxiosError) => {
       setOpenApplicationDialog(false)
+      if (error.response && error.response.data) {
+        const errorData = error.response.data as ResponseErrorData
+
+        switch (errorData.code) {
+          case BOOK_APPLICATION_ERROR_CODES.INVALID_ISBN.code:
+            setError('isbn', {
+              type: 'manual',
+              message: BOOK_APPLICATION_ERROR_CODES.INVALID_ISBN.message,
+            })
+            setFocus('isbn')
+            break
+          case BOOK_APPLICATION_ERROR_CODES.BOOK_ALREADY_INSERT.code:
+            setError('isbn', {
+              type: 'manual',
+              message: BOOK_APPLICATION_ERROR_CODES.BOOK_ALREADY_INSERT.message,
+            })
+            setFocus('isbn')
+            break
+          case BOOK_APPLICATION_ERROR_CODES.INVALID_FILE_FORMAT.code:
+            setError('thumbnail', {
+              type: 'manual',
+              message: BOOK_APPLICATION_ERROR_CODES.INVALID_FILE_FORMAT.message,
+            })
+            setFocus('thumbnail')
+            break
+          case BOOK_APPLICATION_ERROR_CODES.INVALID_PUBLISHED_DATE.code:
+            setError('published_date', {
+              type: 'manual',
+              message:
+                BOOK_APPLICATION_ERROR_CODES.INVALID_PUBLISHED_DATE.message,
+            })
+            setFocus('published_date')
+            break
+          case BOOK_APPLICATION_ERROR_CODES.INVALID_DESCRIPTION.code:
+            setError('description', {
+              type: 'manual',
+              message: BOOK_APPLICATION_ERROR_CODES.INVALID_DESCRIPTION.message,
+            })
+            setFocus('description')
+            break
+
+          default:
+            alert(`Unhandled error : ${error.message}`)
+        }
+      }
     },
   })
 
@@ -140,7 +202,7 @@ const BookApplication = () => {
 
   return (
     <>
-      <div className="mx-auto mt-8 max-w-screen-md">
+      <div className="mx-auto mt-8 w-full max-w-screen-md">
         <Form {...form}>
           <form
             onSubmit={handleSubmit(() => setOpenApplicationDialog(true))}

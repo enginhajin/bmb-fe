@@ -1,4 +1,4 @@
-import { deleteWish } from '@/api/book'
+import { deleteBook } from '@/api/book'
 import { defaultErrorAlert } from '@/lib/utils'
 import { ResponseErrorData } from '@/types/api'
 import { useMutation } from '@tanstack/react-query'
@@ -14,7 +14,7 @@ const useDeleteBookMutation = ({
   onSuccessUpdateData,
 }: useDeleteBookMutationProps) => {
   return useMutation({
-    mutationFn: (isbn: string) => deleteWish(isbn),
+    mutationFn: (isbn: string) => deleteBook(isbn),
     onSuccess: () => {
       onSuccessUpdateData?.()
       toast(

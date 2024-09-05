@@ -6,20 +6,24 @@ import { Dialog } from '@/components/ui/dialog'
 import { useEffect, useState } from 'react'
 import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
 import { LoanDialogContent } from '@/components/organisms/LoanDialogContent'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient, UseQueryResult } from '@tanstack/react-query'
 import { getBook, getWish } from '@/api/book'
 import { useParams } from 'next/navigation'
 import { AxiosError } from 'axios'
-import { useCustomNavigation } from '@/hooks'
-import { BookWishInfo } from '@/types/books'
+import { useCustomCheckRoleDialog, useCustomNavigation } from '@/hooks'
+import { BookDetailInfo, BookWishInfo } from '@/types/books'
 import {
   useDeleteWishMutation,
   usePostLoanMutation,
   usePostWishMutation,
   usePutLoanMutation,
 } from '@/mutations'
+import { ApiResponse, ResponseErrorData } from '@/types/api'
+import { AuthDialogContent } from '@/components/organisms/AuthDialogContent'
 
 export default function BookPage() {
+  const { isUser, dialogOpen, dialogTitle, setDialogOpen, handleDialogSubmit } =
+    useCustomCheckRoleDialog({ requiredRole: 'USER' })
   const [currentWishData, setCurrentWishData] = useState<BookWishInfo>({
     wish_count: 0,
     wished: false,
@@ -33,18 +37,26 @@ export default function BookPage() {
   const params = useParams()
   const isbn = params.isbn as string
 
-  const { data, error } = useQuery({
+  const {
+    data,
+    error,
+    isSuccess: isBookSuccess,
+  }: UseQueryResult<ApiResponse<BookDetailInfo>, AxiosError> = useQuery({
     queryKey: ['book', isbn],
     queryFn: () => getBook(isbn),
     retry: 0,
     staleTime: 0,
+    enabled: !!isUser,
   })
 
-  const { data: wishData } = useQuery({
+  const {
+    data: wishData,
+  }: UseQueryResult<ApiResponse<BookWishInfo>, AxiosError> = useQuery({
     queryKey: ['wish', isbn],
     queryFn: () => getWish(isbn),
     retry: 0,
     staleTime: 0,
+    enabled: isBookSuccess,
   })
 
   const postWishMutation = usePostWishMutation({
@@ -70,8 +82,8 @@ export default function BookPage() {
 
   useEffect(() => {
     if (error) {
-      if (error instanceof AxiosError && error.response?.status === 404) {
-        // 나중에 수정 필요 (ErrorCode 정리 후)
+      const errorData = error?.response?.data as ResponseErrorData
+      if (errorData.code === 'NOT_FOUNDED_ISBN') {
         alert('該当する図書がありません。ホームに移動します。')
         navigateToHome()
       }
@@ -122,6 +134,9 @@ export default function BookPage() {
           </Dialog>
         </>
       )}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <AuthDialogContent title={dialogTitle} onSubmit={handleDialogSubmit} />
+      </Dialog>
     </GnbTemplate>
   )
 }

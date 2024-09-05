@@ -1,9 +1,9 @@
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Heart } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { BookDetailInfo, BookWishInfo } from '@/types/books'
 import { Badge } from '@/components/ui/badge'
+import { useCustomNavigation } from '@/hooks'
 
 export interface BookInfoProps {
   bookData: BookDetailInfo
@@ -24,7 +24,7 @@ const BookInfo = ({
   onOpenLoanSheet,
   onDelete,
 }: BookInfoProps) => {
-  const router = useRouter()
+  const { navigateToBack } = useCustomNavigation()
   const {
     isbn,
     title,
@@ -34,12 +34,9 @@ const BookInfo = ({
     publisher_name,
     published_date,
     status,
+    loans,
   } = bookData
   const { wished, wish_count } = wishData
-
-  const navigateToBack = () => {
-    router.back()
-  }
 
   return (
     <>
@@ -143,8 +140,9 @@ const BookInfo = ({
               <Button
                 variant="outline"
                 size="sm"
-                className="w-1/2 max-w-28 border-2 border-destructive text-destructive hover:bg-destructive hover:text-white"
+                className="w-1/2 max-w-28 border-2 border-destructive text-destructive hover:bg-destructive hover:text-white disabled:opacity-30"
                 onClick={() => onDelete(isbn)}
+                disabled={loans && loans.length > 0}
               >
                 削除
               </Button>

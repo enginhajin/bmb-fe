@@ -13,6 +13,7 @@ import { z } from 'zod'
 import { BookSearchInfo, SearchCategory } from '@/types/books'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect } from 'react'
 
 export const selectItems: { category: SearchCategory; label: string }[] = [
   {
@@ -52,11 +53,16 @@ const SearchInput = ({ data, onSearch }: SearchInputProps) => {
       keyword: data.keyword,
     },
   })
+  const { setValue } = form
   const { control, handleSubmit } = form
 
   const onSubmit = (currentData: BookSearchInfo) => {
     onSearch(currentData)
   }
+
+  useEffect(() => {
+    setValue('keyword', data.keyword)
+  }, [data.keyword, setValue])
 
   return (
     <Form {...form}>

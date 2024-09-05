@@ -13,10 +13,18 @@ import { useParams } from 'next/navigation'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getAdminBook, getWish } from '@/api/book'
 import { ApiResponse } from '@/types/api'
-import { useCustomNavigation } from '@/hooks'
+import { useCustomCheckRoleDialog, useCustomNavigation } from '@/hooks'
 import { AxiosError } from 'axios'
+import { AuthDialogContent } from '@/components/organisms/AuthDialogContent'
 
 export default function BookPage() {
+  const {
+    isAdmin,
+    dialogOpen,
+    dialogTitle,
+    setDialogOpen,
+    handleDialogSubmit,
+  } = useCustomCheckRoleDialog({ requiredRole: 'ADMIN' })
   const [openLoanSheet, setOpenLoanSheet] = useState<boolean>(false)
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false)
 
@@ -26,11 +34,16 @@ export default function BookPage() {
   const params = useParams()
   const isbn = params.isbn as string
 
-  const { data, error } = useQuery<ApiResponse<BookDetailInfo>, Error>({
+  const {
+    data,
+    error,
+    isSuccess: isBookSuccess,
+  } = useQuery<ApiResponse<BookDetailInfo>, Error>({
     queryKey: ['adminBook', isbn],
     queryFn: () => getAdminBook(isbn),
     retry: 0,
     staleTime: 0,
+    enabled: !!isAdmin,
   })
 
   const { data: wishData } = useQuery<ApiResponse<BookWishInfo>>({
@@ -38,6 +51,7 @@ export default function BookPage() {
     queryFn: () => getWish(isbn),
     retry: 0,
     staleTime: 0,
+    enabled: isBookSuccess,
   })
 
   const deleteBookMutation = useDeleteBookMutation({
@@ -55,8 +69,7 @@ export default function BookPage() {
         navigateToAdminBooks()
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error])
+  }, [error, navigateToAdminBooks])
 
   return (
     <GnbTemplate>
@@ -93,6 +106,9 @@ export default function BookPage() {
           </Dialog>
         </>
       )}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <AuthDialogContent title={dialogTitle} onSubmit={handleDialogSubmit} />
+      </Dialog>
     </GnbTemplate>
   )
 }

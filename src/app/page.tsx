@@ -3,40 +3,58 @@
 import { getBookList } from '@/api/book'
 import { Pagination } from '@/components/molecules/Pagination'
 import { SearchInput } from '@/components/molecules/SearchInput'
+import { AuthDialogContent } from '@/components/organisms/AuthDialogContent'
 import { BooksGridView } from '@/components/organisms/BooksGridView'
 import { LoanDialogContent } from '@/components/organisms/LoanDialogContent'
 import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
 import { Dialog } from '@/components/ui/dialog'
-import { useCustomPagination, useCustomSearchBooks } from '@/hooks'
+import {
+  useCustomCheckRoleDialog,
+  useCustomPagination,
+  useCustomSearchBooks,
+} from '@/hooks'
+import { handleBookListError } from '@/lib/utils'
 import {
   useDeleteWishMutation,
   usePostLoanMutation,
   usePostWishMutation,
   usePutLoanMutation,
 } from '@/mutations'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { Suspense, useState } from 'react'
+import { ApiResponse } from '@/types/api'
+import { BookListInfo } from '@/types/books'
+import { useQuery, useQueryClient, UseQueryResult } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
+import { Suspense, useEffect, useState } from 'react'
 
 function Page() {
-  const { currentPage, handlePageChange } = useCustomPagination(0)
-  const { currentSearchData, handleSearch } = useCustomSearchBooks()
+  const { isUser, dialogOpen, dialogTitle, setDialogOpen, handleDialogSubmit } =
+    useCustomCheckRoleDialog({ requiredRole: 'USER' })
+  const { currentPage, handlePageChange, setTotalPage } = useCustomPagination()
+  const { currentSearchData, handleSearch } = useCustomSearchBooks({
+    handlePageChange,
+  })
   const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false)
   const [openLoanDialog, setOpenLoanDialog] = useState<boolean>(false)
   const [currentBookIsbn, setCurrentBookIsbn] = useState<string>('')
 
   const queryClient = useQueryClient()
 
-  const { data } = useQuery({
+  const {
+    data,
+    error,
+  }: UseQueryResult<ApiResponse<BookListInfo>, AxiosError> = useQuery({
     queryKey: ['books', currentPage, currentSearchData],
     queryFn: () =>
       getBookList({
         page: currentPage,
-        size: 7, // 나중에 수정 필요 (테스트용, 기본 10)
+        size: 3, // 나중에 수정 필요 (테스트용, 기본 10)
         category: currentSearchData.category,
         keyword: currentSearchData.keyword,
       }),
     staleTime: 0,
+    retry: 0,
+    enabled: !!isUser,
   })
 
   const postWishMutation = usePostWishMutation({
@@ -68,6 +86,16 @@ function Page() {
     }
   }
 
+  useEffect(() => {
+    if (data) setTotalPage(data.result.total_pages)
+  }, [data, setTotalPage])
+
+  useEffect(() => {
+    if (error && error.response) {
+      handleBookListError(error.response, handlePageChange)
+    }
+  }, [error, handlePageChange])
+
   return (
     <GnbTemplate
       title="図書リスト"
@@ -89,6 +117,13 @@ function Page() {
             }}
             handleToggleWish={handleToggleWish}
           />
+          {data.result.books.length > 0 && (
+            <Pagination
+              total_pages={data.result.total_pages}
+              current_page={currentPage}
+              onPageChange={handlePageChange}
+            />
+          )}
           <Dialog open={openReturnDialog} onOpenChange={setOpenReturnDialog}>
             <ReturnDialogContent
               onSubmit={() => {
@@ -105,13 +140,11 @@ function Page() {
               }}
             />
           </Dialog>
-          <Pagination
-            total_pages={data.result.total_pages}
-            current_page={currentPage}
-            onPageChange={handlePageChange}
-          />
         </>
       )}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <AuthDialogContent title={dialogTitle} onSubmit={handleDialogSubmit} />
+      </Dialog>
     </GnbTemplate>
   )
 }

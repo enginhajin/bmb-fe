@@ -19,7 +19,7 @@ const LoanSheetConent = ({ data }: LoanSheetConentProps) => {
         <SheetTitle className="font-bold">貸出状況</SheetTitle>
         <SheetDescription className="line-clamp-2">{title}</SheetDescription>
       </SheetHeader>
-      <div className="mt-6 max-h-[calc(100%-6.5rem)]">
+      <div className="mt-6 max-h-[calc(100%-6.5rem)] overflow-y-auto">
         {loans && loans.length > 0 ? (
           <ul>
             {loans.map((item: BookLentalInfo) => {

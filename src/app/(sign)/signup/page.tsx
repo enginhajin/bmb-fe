@@ -58,6 +58,8 @@ const schema = z.object({
 })
 
 export default function SignUpPage() {
+  const { navigateToSignIn } = useCustomNavigation()
+
   const form = useForm<SignUpData>({
     resolver: zodResolver(schema),
     mode: 'onChange',
@@ -73,6 +75,7 @@ export default function SignUpPage() {
     formState: { isValid, isDirty },
     watch,
     setError,
+    setFocus,
   } = form
 
   const user_id = watch('user_id')
@@ -86,8 +89,6 @@ export default function SignUpPage() {
     isDirty &&
     isValid
   )
-
-  const { navigateToSignIn } = useCustomNavigation()
 
   const mutation = useMutation({
     mutationFn: (data: SignUpData) => postSignup(data),
@@ -113,12 +114,14 @@ export default function SignUpPage() {
               type: 'manual',
               message: SIGNUP_ERROR_CODES.ID_DUPLICATION.message,
             })
+            setFocus('user_id')
             break
           case SIGNUP_ERROR_CODES.NICKNAME_DUPLICATION.code:
             setError('nickname', {
               type: 'manual',
               message: SIGNUP_ERROR_CODES.NICKNAME_DUPLICATION.message,
             })
+            setFocus('nickname')
             break
           default:
             alert(`Unhandled error : ${error.message}`)

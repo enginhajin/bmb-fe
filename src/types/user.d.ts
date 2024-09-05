@@ -14,5 +14,10 @@ export interface SignInData {
 export interface UserInfo {
   user_id: string
   nickname: string
-  role: UserRole
+  role: UserRole | string
+}
+
+export interface TokenInfo {
+  accessToken: string | null
+  isExpired: boolean
 }

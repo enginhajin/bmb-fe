@@ -1,4 +1,4 @@
-import { getAccessToken, setAccessToken, updateUserInfo } from '@/lib/utils'
+import { getTokenInfo, setTokenInfo, updateUserInfo } from '@/lib/utils'
 import axios, { AxiosError } from 'axios'
 
 const axiosInstance = axios.create({
@@ -13,15 +13,14 @@ axiosInstance.interceptors.request.use(
   (config) => {
     const copyConfig = { ...config }
     if (!copyConfig.headers) return copyConfig
-    const accessToken = getAccessToken()
+    const tokenInfo = getTokenInfo()
 
-    if (accessToken && config.headers) {
-      copyConfig.headers.Authorization = `Bearer ${accessToken}`
+    if (tokenInfo.accessToken && config.headers) {
+      copyConfig.headers.Authorization = `Bearer ${tokenInfo.accessToken}`
     }
     return copyConfig
   },
   (error) => {
-    console.log(error)
     Promise.reject(error)
   },
 )
@@ -30,18 +29,17 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const { config, response } = error
-    const accessToken = getAccessToken()
+    const tokenInfo = getTokenInfo()
 
     if (response) {
+      const { status } = response
       const excludedUrls = ['/user/signin', '/user/signup']
 
       if (excludedUrls.some((url) => config?.url?.startsWith(url))) {
         return Promise.reject(error)
       }
 
-      const { status } = response
-
-      if (!accessToken || status === 401) {
+      if (tokenInfo.isExpired || status === 401) {
         try {
           const refreshTokenResponse = await axios.post(
             `${process.env.NEXT_PUBLIC_API_DOMAIN}/auth`,
@@ -50,34 +48,28 @@ axiosInstance.interceptors.response.use(
           )
           const { result, token } = refreshTokenResponse.data
           updateUserInfo(result)
-          setAccessToken(token)
+          setTokenInfo(token)
 
           if (error.config) {
             return await axiosInstance.request({
               ...error.config,
               headers: {
                 ...error.config.headers,
-                Authorization: `Bearer ${accessToken}`,
+                Authorization: `Bearer ${token.accessToken}`,
               },
             })
           }
         } catch (refreshError) {
-          if (!accessToken) {
-            alert('会員専用のページです。ログインしてください。')
-          } else {
-            alert('Tokenの更新に失敗しました。またログインしてください。')
-          }
+          alert('Tokenの更新に失敗しました。またログインしてください。')
           window.location.href = '/signin'
         }
-      } else if (status === 403) {
-        alert('アクセス権がありません。ログインページにリダイレクトします。')
-        window.location.href = '/signin'
-      } else if (status >= 500) {
-        alert('サーバーエラーが発生しました。管理者にお問い合わせください。')
+      } else {
+        return Promise.reject(error)
       }
+    } else {
+      return Promise.reject(error)
     }
-
-    return Promise.reject(error)
+    return null
   },
 )
 

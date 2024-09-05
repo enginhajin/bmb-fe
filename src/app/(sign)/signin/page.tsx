@@ -27,7 +27,7 @@ import { useCustomNavigation } from '@/hooks'
 import { toast } from 'sonner'
 import { UserCheck } from 'lucide-react'
 import { useUserStore } from '@/stores'
-import { setAccessToken } from '@/lib/utils'
+import { setTokenInfo } from '@/lib/utils'
 
 const schema = z.object({
   user_id: z.string().min(1, '必須項目です。'),
@@ -38,6 +38,9 @@ export default function SignInPage() {
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | null>(
     null,
   )
+
+  const { navigateToHome, navigateToAdminBooks } = useCustomNavigation()
+  const { setUserInfo } = useUserStore()
 
   const form = useForm<SignInData>({
     resolver: zodResolver(schema),
@@ -60,25 +63,26 @@ export default function SignInPage() {
 
   const isButtonDisabled = !(user_id && password && isDirty && isValid)
 
-  const { navigateToHome } = useCustomNavigation()
-  const { setUserInfo } = useUserStore()
-
   const mutation = useMutation({
     mutationFn: (data: SignInData) => postSignin(data),
     onSuccess: (data: ApiResponse<UserInfo>) => {
       setSubmitErrorMessage(null)
       setUserInfo(data.result)
-      if (data.token) setAccessToken(data.token)
+      if (data.token) setTokenInfo(data.token)
       toast(
         <span className="flex items-center gap-2">
           <UserCheck className="size-4 text-primary" />
           こんにちは、{`${data.result.nickname}`}さん！bmbへようこそ。
         </span>,
         {
-          duration: 4000,
+          duration: 3000,
         },
       )
-      navigateToHome()
+      if (data.result.role === 'USER') {
+        navigateToHome()
+      } else {
+        navigateToAdminBooks()
+      }
     },
     onError: (error: AxiosError) => {
       if (error.response && error.response.data) {
