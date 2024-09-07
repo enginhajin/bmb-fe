@@ -4,7 +4,14 @@ import { PATHS } from '@/constants/path'
 import { useCustomWindowSize } from '@/hooks'
 import { usePostSignOutMutation } from '@/mutations'
 import { useGnbStore, useUserStore } from '@/stores'
-import { Book, Bookmark, Heart, Menu, SquarePlus } from 'lucide-react'
+import {
+  Book,
+  Bookmark,
+  CircleUserRound,
+  Heart,
+  Menu,
+  SquarePlus,
+} from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -42,7 +49,7 @@ const adminGnbItems: GnbItem[] = [
 const Gnb = () => {
   const pathname = usePathname()
   const { userInfo } = useUserStore()
-  const { role } = userInfo
+  const { role, nickname } = userInfo
   const { isExpand, isLgExpand, setIsExpand, setIsLgExpand } = useGnbStore()
   const { width } = useCustomWindowSize()
 
@@ -77,7 +84,10 @@ const Gnb = () => {
       </button>
       <div className="size-full overflow-y-auto px-5 py-8">
         <header>
-          <div className="relative flex items-center text-white">
+          <Link
+            href={role === 'ADMIN' ? PATHS.ADMIN_BOOKS : PATHS.HOME}
+            className="relative inline-flex items-center text-white"
+          >
             <Image
               src="/img/logo/logo-bmb-white.png"
               width={26}
@@ -86,8 +96,12 @@ const Gnb = () => {
               className="relative top-[-0.375rem]"
             />
             <span className="ml-4 text-2xl font-extrabold">bmb</span>
-          </div>
+          </Link>
         </header>
+        <div className="mt-5 flex text-gray-100">
+          <CircleUserRound className="size-5 flex-shrink-0" />
+          <span className="ml-1 line-clamp-1 text-sm">{nickname}</span>
+        </div>
         <nav className="mt-5">
           <ul className="flex flex-col gap-2">
             {menuItems.map((item) => {

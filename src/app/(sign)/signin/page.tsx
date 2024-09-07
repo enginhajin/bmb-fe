@@ -25,7 +25,7 @@ import { useMutation } from '@tanstack/react-query'
 import { postSignin } from '@/api/auth'
 import { useCustomNavigation } from '@/hooks'
 import { toast } from 'sonner'
-import { UserCheck } from 'lucide-react'
+import { ChevronRight, UserCheck, UserCog } from 'lucide-react'
 import { useUserStore } from '@/stores'
 import { setTokenInfo } from '@/lib/utils'
 
@@ -38,6 +38,8 @@ export default function SignInPage() {
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | null>(
     null,
   )
+  const [isVisibleAccountInfo, setIsVisibleAccountInfo] =
+    useState<boolean>(false)
 
   const { navigateToHome, navigateToAdminBooks } = useCustomNavigation()
   const { setUserInfo } = useUserStore()
@@ -152,6 +154,26 @@ export default function SignInPage() {
           {submitErrorMessage && (
             <p className="text-sm text-destructive">{submitErrorMessage}</p>
           )}
+          <div className="text-tertiary">
+            <button
+              type="button"
+              className="flex text-xs"
+              onClick={() => {
+                setIsVisibleAccountInfo(!isVisibleAccountInfo)
+              }}
+            >
+              <UserCog className="mr-1 size-4" /> テストアカウント
+              <ChevronRight
+                className={`size-4 ${isVisibleAccountInfo && 'rotate-90'}`}
+              />
+            </button>
+            <ul
+              className={`mt-2 ${isVisibleAccountInfo ? 'block' : 'hidden'} `}
+            >
+              <li className="text-xs">USER : test1 / test1234</li>
+              <li className="text-xs">ADMIN : admin1 / password123</li>
+            </ul>
+          </div>
           <Button type="submit" disabled={isButtonDisabled} className="w-full">
             ログイン
           </Button>
