@@ -89,7 +89,7 @@ export const getAdminBook = async (isbn: string) => {
 }
 
 export const deleteBook = async (isbn: string) => {
-  const response = await axiosInstance.delete(`/books/${isbn}`)
+  const response = await axiosInstance.delete(`/admin/books/${isbn}`)
   return response.data
 }
 

@@ -41,7 +41,7 @@ function Page() {
     queryFn: () =>
       getLoanList({
         page: currentPage,
-        size: 3, // 나중에 수정 필요 (테스트용, 기본 10)
+        size: 12,
         category: currentSearchData.category,
         keyword: currentSearchData.keyword,
       }),

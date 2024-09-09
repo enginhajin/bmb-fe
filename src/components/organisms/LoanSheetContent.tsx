@@ -15,7 +15,7 @@ const LoanSheetConent = ({ data }: LoanSheetConentProps) => {
 
   return (
     <SheetContent className="w-10/12 max-w-[25rem] sm:max-w-[25rem]">
-      <SheetHeader>
+      <SheetHeader className="text-left">
         <SheetTitle className="font-bold">貸出状況</SheetTitle>
         <SheetDescription className="line-clamp-2">{title}</SheetDescription>
       </SheetHeader>

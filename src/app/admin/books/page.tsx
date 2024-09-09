@@ -49,7 +49,7 @@ function Page() {
     queryFn: () =>
       getAdminBookList({
         page: currentPage,
-        size: 5, // 나중에 수정 필요 (테스트용, 기본 10)
+        size: 12,
         category: currentSearchData.category,
         keyword: currentSearchData.keyword,
       }),
