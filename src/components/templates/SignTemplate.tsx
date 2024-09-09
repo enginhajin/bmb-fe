@@ -25,7 +25,7 @@ const SignTemplate = ({ children, title, footer }: SignTemplateProps) => {
   }, [])
 
   return (
-    <div className="flex size-full min-h-screen flex-wrap items-center justify-center bg-primary p-5">
+    <div className="flex size-full min-h-svh flex-wrap items-center justify-center bg-primary p-5">
       <Card className="w-full max-w-sm shadow-2xl">
         <CardHeader className="items-center space-y-5">
           <div className="w-8">
