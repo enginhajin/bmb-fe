@@ -191,8 +191,8 @@ export default function SignUpPage() {
               </FormItem>
             )}
           />
-          <p className="flex items-center text-xs text-tertiary">
-            <CircleAlert className="mr-1 size-4" />
+          <p className="inline-block items-center text-xs text-tertiary">
+            <CircleAlert className="mr-1 inline size-4" />
             <Link
               href="https://policies.google.com/terms?hl=ja"
               target="_blank"
