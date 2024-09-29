@@ -5,10 +5,27 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { Toaster } from '@/components/ui/sonner'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://bmb-project.vercel.app'),
   title: 'bmb',
   description: 'bmb-project(図書管理サイト)',
   icons: {
     icon: '/favicon.ico',
+  },
+  openGraph: {
+    images: [
+      {
+        url: '/og-image.jpg',
+        alt: 'bmb-project(図書管理サイト)',
+      },
+    ],
+  },
+  twitter: {
+    images: [
+      {
+        url: '/og-image.jpg',
+        alt: 'bmb-project(図書管理サイト)',
+      },
+    ],
   },
 }
 
