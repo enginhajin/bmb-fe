@@ -11,6 +11,7 @@ import {
   Heart,
   Menu,
   SquarePlus,
+  UsersRound,
 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -34,6 +35,11 @@ const gnbItems: GnbItem[] = [
 ]
 
 const adminGnbItems: GnbItem[] = [
+  {
+    href: PATHS.ADMIN_USERS,
+    label: '会員リスト',
+    icon: <UsersRound />,
+  },
   {
     href: PATHS.ADMIN_BOOKS,
     label: '図書リスト',

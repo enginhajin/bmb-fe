@@ -20,6 +20,7 @@ import { BookListInfo } from '@/types/books'
 import { AxiosError } from 'axios'
 import { handleBookListError } from '@/lib/utils'
 import { AuthDialogContent } from '@/components/organisms/AuthDialogContent'
+import { bookSelectItems } from '@/constants/search'
 
 function Page() {
   const { isUser, dialogOpen, dialogTitle, setDialogOpen, handleDialogSubmit } =
@@ -70,7 +71,11 @@ function Page() {
     <GnbTemplate
       title="貸出リスト"
       headerContent={
-        <SearchInput data={currentSearchData} onSearch={handleSearch} />
+        <SearchInput
+          data={currentSearchData}
+          onSearch={handleSearch}
+          selectItems={bookSelectItems}
+        />
       }
     >
       {data && (

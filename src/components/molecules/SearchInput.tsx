@@ -10,42 +10,27 @@ import {
 } from '@/components/ui/select'
 import { Form, FormField } from '@/components/ui/form'
 import { z } from 'zod'
-import { BookSearchInfo, SearchCategory } from '@/types/books'
+import { SearchInfo } from '@/types/books'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 
-export const selectItems: { category: SearchCategory; label: string }[] = [
-  {
-    category: 'ALL',
-    label: 'キーワード',
-  },
-  {
-    category: 'TITLE',
-    label: 'タイトル',
-  },
-  {
-    category: 'AUTHOR',
-    label: '著者',
-  },
-  {
-    category: 'PUBLISHER',
-    label: '出版社',
-  },
-]
-
 const schema = z.object({
-  category: z.enum(['ALL', 'TITLE', 'AUTHOR', 'PUBLISHER']),
+  category: z.enum(['ALL', 'TITLE', 'AUTHOR', 'PUBLISHER', 'ID', 'NICKNAME']),
   keyword: z.string(),
 })
 
 export interface SearchInputProps {
-  data: BookSearchInfo
-  onSearch: (data: BookSearchInfo) => void
+  data: SearchInfo
+  onSearch: (data: SearchInfo) => void
+  selectItems: {
+    category: string
+    label: string
+  }[]
 }
 
-const SearchInput = ({ data, onSearch }: SearchInputProps) => {
-  const form = useForm<BookSearchInfo>({
+const SearchInput = ({ data, onSearch, selectItems }: SearchInputProps) => {
+  const form = useForm<SearchInfo>({
     resolver: zodResolver(schema),
     mode: 'onSubmit',
     defaultValues: {
@@ -56,7 +41,7 @@ const SearchInput = ({ data, onSearch }: SearchInputProps) => {
   const { setValue } = form
   const { control, handleSubmit } = form
 
-  const onSubmit = (currentData: BookSearchInfo) => {
+  const onSubmit = (currentData: SearchInfo) => {
     onSearch(currentData)
   }
 

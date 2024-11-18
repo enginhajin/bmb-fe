@@ -3,6 +3,7 @@ import useCustomSearchParams from './useCustomSearchParams'
 import useCustomNavigation from './useCustomNavigation'
 import useCustomPagination from './useCustomPagination'
 import useCustomSearchBooks from './useCustomSearchBooks'
+import useCustomSearchUsers from './useCustomSearchUsers'
 import useCustomCheckRoleDialog from './useCustomCheckRoleDialog'
 
 export {
@@ -11,5 +12,6 @@ export {
   useCustomNavigation,
   useCustomPagination,
   useCustomSearchBooks,
+  useCustomSearchUsers,
   useCustomCheckRoleDialog,
 }

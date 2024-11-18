@@ -1,6 +1,6 @@
 export type BookStatus = 'AVAILABLE' | 'UNAVAILABLE' | 'CHECKED_OUT'
-export type SearchCategory = 'ALL' | 'TITLE' | 'AUTHOR' | 'PUBLISHER'
-
+export type BookSearchCategory = 'ALL' | 'TITLE' | 'AUTHOR' | 'PUBLISHER'
+export type UserSearchCategory = 'ALL' | 'ID' | 'NICKNAME'
 export interface BookInfo {
   id: string
   book_id?: string
@@ -34,8 +34,9 @@ export interface BookLentalInfo {
   nickname: string
   loan_at: string
   return_at: string | null
+  title?: string
+  isbn?: string
 }
-
 export interface ListPageInfo {
   total_pages: number
   current_page: number
@@ -43,8 +44,8 @@ export interface ListPageInfo {
   total_items: number
 }
 
-export interface BookSearchInfo {
-  category: SearchCategory
+export interface SearchInfo {
+  category: string
   keyword: string
 }
 
@@ -54,7 +55,7 @@ export interface BookIsbnInfo {
 
 export interface BookListItem extends BookInfo, BookWishInfo {}
 
-export interface BookListInfo extends ListPageInfo, BookSearchInfo {
+export interface BookListInfo extends ListPageInfo, SearchInfo {
   books: BookInfo[]
 }
 
@@ -62,7 +63,7 @@ export interface BookApplicationInfo extends BookDetailInfo {
   thumbnail: File
 }
 
-export interface BookListApiParams extends BookSearchInfo {
+export interface BookListApiParams extends SearchInfo {
   page: number
   size: number
 }

@@ -1,4 +1,5 @@
 import { SignInData, SignUpData } from '@/types/user'
+import { BookListApiParams } from '@/types/books'
 import axiosInstance from './axios'
 
 export const postSignup = async (data: SignUpData) => {
@@ -13,5 +14,17 @@ export const postSignin = async (data: SignInData) => {
 
 export const postSignout = async () => {
   const response = await axiosInstance.post('/user/signout')
+  return response.data
+}
+
+export const getAdminUserList = async ({
+  page,
+  size,
+  category,
+  keyword,
+}: BookListApiParams) => {
+  const response = await axiosInstance.get('/admin/users', {
+    params: { page, size, category, keyword },
+  })
   return response.data
 }

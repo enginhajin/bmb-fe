@@ -22,6 +22,7 @@ import { ApiResponse } from '@/types/api'
 import { AxiosError } from 'axios'
 import { handleBookListError } from '@/lib/utils'
 import { AuthDialogContent } from '@/components/organisms/AuthDialogContent'
+import { bookSelectItems } from '@/constants/search'
 
 function Page() {
   const {
@@ -84,7 +85,11 @@ function Page() {
     <GnbTemplate
       title="図書リスト（アドミン）"
       headerContent={
-        <SearchInput data={currentSearchData} onSearch={handleSearch} />
+        <SearchInput
+          data={currentSearchData}
+          onSearch={handleSearch}
+          selectItems={bookSelectItems}
+        />
       }
     >
       {data && (

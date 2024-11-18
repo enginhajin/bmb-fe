@@ -7,6 +7,7 @@ export const PATHS = {
   LOAN: '/mypage/loan',
   ADMIN_BOOKS: '/admin/books',
   ADMIN_APPLICATION: '/admin/books/application',
+  ADMIN_USERS: '/admin/users',
 } as const
 
 export type Paths = (typeof PATHS)[keyof typeof PATHS]

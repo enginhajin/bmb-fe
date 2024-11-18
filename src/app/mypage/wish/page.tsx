@@ -26,6 +26,7 @@ import { ApiResponse } from '@/types/api'
 import { BookListInfo } from '@/types/books'
 import { handleBookListError } from '@/lib/utils'
 import { AuthDialogContent } from '@/components/organisms/AuthDialogContent'
+import { bookSelectItems } from '@/constants/search'
 
 function Page() {
   const { isUser, dialogOpen, dialogTitle, setDialogOpen, handleDialogSubmit } =
@@ -88,7 +89,11 @@ function Page() {
     <GnbTemplate
       title="お気に入りリスト"
       headerContent={
-        <SearchInput data={currentSearchData} onSearch={handleSearch} />
+        <SearchInput
+          data={currentSearchData}
+          onSearch={handleSearch}
+          selectItems={bookSelectItems}
+        />
       }
     >
       {data && (

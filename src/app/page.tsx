@@ -9,6 +9,7 @@ import { LoanDialogContent } from '@/components/organisms/LoanDialogContent'
 import { ReturnDialogContent } from '@/components/organisms/ReturnDialogContent'
 import { GnbTemplate } from '@/components/templates/GnbTemplate'
 import { Dialog } from '@/components/ui/dialog'
+import { bookSelectItems } from '@/constants/search'
 import {
   useCustomCheckRoleDialog,
   useCustomPagination,
@@ -100,7 +101,11 @@ function Page() {
     <GnbTemplate
       title="図書リスト"
       headerContent={
-        <SearchInput data={currentSearchData} onSearch={handleSearch} />
+        <SearchInput
+          data={currentSearchData}
+          onSearch={handleSearch}
+          selectItems={bookSelectItems}
+        />
       }
     >
       {data && (

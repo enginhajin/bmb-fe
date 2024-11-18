@@ -1,3 +1,5 @@
+import { ListPageInfo, SearchInfo } from './books'
+
 export type UserRole = 'USER' | 'ADMIN'
 
 export interface SignUpData {
@@ -20,4 +22,14 @@ export interface UserInfo {
 export interface TokenInfo {
   accessToken: string | null
   isExpired: boolean
+}
+
+export interface AdminUserInfo {
+  user_id: string
+  nickname: string
+  created_at: string
+  loans: BookLentalInfo[]
+}
+export interface AdminUserListInfo extends ListPageInfo, SearchInfo {
+  users: AdminUserInfo[]
 }
